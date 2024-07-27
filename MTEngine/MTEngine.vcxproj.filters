@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{1dc04f33-e584-4c27-b789-551439bbe748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\ObjectDerived">
+      <UniqueIdentifier>{c845e78d-0cb4-41cd-b802-90cf39fb7bfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Objects">
+      <UniqueIdentifier>{a2c554af-0d5b-4d05-bf83-ed2c66c4c840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Other">
+      <UniqueIdentifier>{2a4c6fc6-4b73-4e0d-90fb-e5c09524f91e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\MainEngine">
+      <UniqueIdentifier>{2846fe65-6e69-445f-a65d-a1d2e4d5fe45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Globals">
+      <UniqueIdentifier>{275feadd-c863-42aa-8851-b349ab390e4e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MTEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Base.ixx">
+      <Filter>Source Files\Engine\ObjectDerived</Filter>
+    </ClCompile>
+    <ClCompile Include="Collidable.ixx">
+      <Filter>Source Files\Engine\ObjectDerived</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawable.ixx">
+      <Filter>Source Files\Engine\ObjectDerived</Filter>
+    </ClCompile>
+    <ClCompile Include="Eventable.ixx">
+      <Filter>Source Files\Engine\ObjectDerived</Filter>
+    </ClCompile>
+    <ClCompile Include="Moveable.ixx">
+      <Filter>Source Files\Engine\ObjectDerived</Filter>
+    </ClCompile>
+    <ClCompile Include="Globals.ixx">
+      <Filter>Source Files\Engine\Globals</Filter>
+    </ClCompile>
+    <ClCompile Include="Circle.ixx">
+      <Filter>Source Files\Engine\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.ixx">
+      <Filter>Source Files\Engine\MainEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="OC.ixx">
+      <Filter>Source Files\Engine\MainEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Functor.ixx">
+      <Filter>Source Files\Engine\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Updateable.ixx">
+      <Filter>Source Files\Engine\ObjectDerived</Filter>
+    </ClCompile>
+    <ClCompile Include="Concepts.ixx">
+      <Filter>Source Files\Engine\Other</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
