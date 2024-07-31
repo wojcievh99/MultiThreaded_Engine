@@ -187,6 +187,7 @@
     <ClCompile Include="Moveable.ixx" />
     <ClCompile Include="MTEngine.cpp" />
     <ClCompile Include="OC.ixx" />
+    <ClCompile Include="Player.ixx" />
     <ClCompile Include="Updateable.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

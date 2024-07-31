@@ -72,5 +72,8 @@
     <ClCompile Include="Concepts.ixx">
       <Filter>Source Files\Engine\Other</Filter>
     </ClCompile>
+    <ClCompile Include="Player.ixx">
+      <Filter>Source Files\Engine\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

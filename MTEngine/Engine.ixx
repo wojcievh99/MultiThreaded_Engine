@@ -87,9 +87,18 @@ export class Engine {
 					{
 						Functor f = func; f();
 					}
-
+				for (auto const& [key, func] : e.second->_rKeyAssociation)
+					if (event->type == sf::Event::KeyReleased and event->key.code == key)
+					{
+						Functor f = func; f();
+					}
 				for (auto const& [button, func] : e.second->_buttonAssociation)
 					if (event->type == sf::Event::MouseButtonPressed and event->mouseButton.button == button)
+					{
+						Functor f = func; f();
+					}
+				for (auto const& [button, func] : e.second->_rButtonAssociation)
+					if (event->type == sf::Event::MouseButtonReleased and event->mouseButton.button == button)
 					{
 						Functor f = func; f();
 					}
