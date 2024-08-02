@@ -175,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animateable.ixx" />
     <ClCompile Include="Base.ixx" />
     <ClCompile Include="Circle.ixx" />
     <ClCompile Include="Collidable.ixx" />
@@ -187,6 +188,7 @@
     <ClCompile Include="Moveable.ixx" />
     <ClCompile Include="MTEngine.cpp" />
     <ClCompile Include="OC.ixx" />
+    <ClCompile Include="Player.ixx" />
     <ClCompile Include="Updateable.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

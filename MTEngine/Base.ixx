@@ -37,6 +37,7 @@ public:
 	}
 
 	virtual void garbage() {
+		object_alive = false;
 		std::cout << "[ID: " << _object_id << "](-) \n";
 	}
 

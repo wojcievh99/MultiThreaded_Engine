@@ -8,7 +8,7 @@ import Eventable;
 import Collidable;
 import Updateable;
 
-export class Circle : public Base, public Drawable, public Updateable, public Moveable, public Collidable {
+export class Circle : public Base, public Drawable, public Updateable, public Moveable, public Collidable, public Eventable {
 	sf::CircleShape _body;
 	float _radius;
 public:

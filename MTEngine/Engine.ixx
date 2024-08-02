@@ -19,8 +19,10 @@ export class Engine {
 
 			while (isWindowOpen) {
 				window->clear();
-				
+
+				deleteMutex.lock();
 				drawAllObjects(); 
+				deleteMutex.unlock();
 
 				window->display();
 			} 
@@ -68,12 +70,6 @@ export class Engine {
 		}
 	}
 
-	void moveAllObjects() {
-		for (auto const& e : oc._objectMoves) {
-			Functor f = e.second; f();
-		}
-	}
-
 	void checkAndExecuteEventsInAllObjects() {
 		while (window->pollEvent(*event)) {
 			if (event->type == sf::Event::Closed) {
@@ -87,9 +83,18 @@ export class Engine {
 					{
 						Functor f = func; f();
 					}
-
+				for (auto const& [key, func] : e.second->_rKeyAssociation)
+					if (event->type == sf::Event::KeyReleased and event->key.code == key)
+					{
+						Functor f = func; f();
+					}
 				for (auto const& [button, func] : e.second->_buttonAssociation)
 					if (event->type == sf::Event::MouseButtonPressed and event->mouseButton.button == button)
+					{
+						Functor f = func; f();
+					}
+				for (auto const& [button, func] : e.second->_rButtonAssociation)
+					if (event->type == sf::Event::MouseButtonReleased and event->mouseButton.button == button)
 					{
 						Functor f = func; f();
 					}
@@ -97,21 +102,34 @@ export class Engine {
 		}
 	}
 
-	void deleteAllObjects() { // not all obviously
-		window->setActive(false);
-		for (auto const& [className, element] : oc._database) {
-			for (auto const& [id, object] : element) {
-				if (!object->isObjectAlive()) {
-					object->garbage();
-					oc.deleteObject(object->getID());
-				}
-			}
+	void moveAllObjects() {
+		for (auto const& e : oc._objectMoves) {
+			Functor f = e.second; f();
 		}
 	}
 
 	void updateAllObjects() {
 		for (auto const& e : oc._objectUpdates) {
 			Functor f = e.second; f();
+		}
+	}
+
+	void animateAllObjects() {
+		for (auto const& e : oc._objectAnimations) {
+			Functor f = e.second; f();
+		}
+	}
+
+	void deleteAllObjects() { // not all obviously
+		for (auto const& [className, element] : oc._database) {
+			for (auto const& [id, object] : element) {
+				if (!object->isObjectAlive()) {
+					deleteMutex.lock();
+					oc.deleteObject(object->getID());
+					deleteMutex.unlock();
+					break;
+				}
+			}
 		}
 	}
 
@@ -164,6 +182,7 @@ public:
 					checkAndExecuteEventsInAllObjects();
 					moveAllObjects();
 					updateAllObjects();
+					animateAllObjects();
 					deleteAllObjects();
 					
 				}

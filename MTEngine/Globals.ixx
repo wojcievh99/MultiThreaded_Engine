@@ -7,6 +7,7 @@ export import Functor;
 export import Concepts;
 
 export sf::Clock globalClock;
+export sf::Mutex deleteMutex;
 //export sf::Mutex mutex;
 
 export bool isWindowOpen = false;
