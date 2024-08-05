@@ -14,7 +14,7 @@ int main()
 	bool init = engine.init({ 1500, 1200 }, "TEST", false, 60);
 
 	auto p = engine.addObject<Player>(
-		std::make_shared<Player>(sf::Vector2f{ 100.f, 900.f }, sf::Vector2f{ 2.f, 2.f })
+		std::make_shared<Player>(sf::Vector2f{ 100.f, 500.f }, sf::Vector2f{ 2.f, 2.f })
 	);
 
 	auto r = engine.addObject<Rectangle>(

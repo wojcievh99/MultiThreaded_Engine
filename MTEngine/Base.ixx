@@ -10,7 +10,7 @@ protected:
 	bool object_alive;
 public:
 
-	Base(std::string _className, sf::Vector2f _position) 
+	Base(std::string _className, sf::Vector2f _position)
 		: _object_className(_className), object_position(_position), object_alive(true)
 	{
 		this->_object_id = ++globalID;

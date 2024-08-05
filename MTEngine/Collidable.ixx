@@ -5,14 +5,21 @@ import Base;
 
 export class Collidable {
 protected:
+	sf::FloatRect globalBounds;
+
 	Collidable* _objectColliding;
 	Collidable* _lastObjectColliding;
 public:
-	Collidable() : _objectColliding(nullptr), _lastObjectColliding(nullptr) {}
+	Collidable() : globalBounds({ {0.f, 0.f}, {0.f, 0.f} }), _objectColliding(nullptr), _lastObjectColliding(nullptr) {}
 	~Collidable() { delete _objectColliding, _lastObjectColliding; }
 
-	virtual bool isInCollisionWith(Collidable* ob) = 0;
-	virtual void afterCollision() = 0;
+	virtual bool isInCollisionWith(Collidable* ob) {
+		if (ob->getGlobalBounds().intersects(this->getGlobalBounds())) {
+			return true;
+		}
+		return false;
+	};
+	virtual void afterCollision() {	}
 
 	bool putObjectColliding(Collidable* ob) {
 		if (ob == _objectColliding) return false;
@@ -28,5 +35,9 @@ public:
 
 	Collidable* getLastObjectColliding() {
 		return _lastObjectColliding;
+	}
+
+	sf::FloatRect getGlobalBounds() {
+		return globalBounds;
 	}
 };
