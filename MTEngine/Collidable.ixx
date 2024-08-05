@@ -3,6 +3,8 @@ export module Collidable;
 import Globals;
 import Base;
 
+export enum direc { UP, DOWN, RIGHT, LEFT, NONE };
+
 export class Collidable {
 protected:
 	sf::FloatRect globalBounds;
@@ -21,6 +23,19 @@ public:
 	};
 	virtual void afterCollision() {	}
 
+	direc getVerticalDirectionOfCollidingObject() {
+		if (_objectColliding) {
+			Base* obB = dynamic_cast<Base*>(_objectColliding);
+			Base* thisB = dynamic_cast<Base*>(this);
+
+			if (thisB->getPosition().y > obB->getPosition().y) return UP;
+			else if (thisB->getPosition().y < obB->getPosition().y) return DOWN;
+
+		}
+		return NONE;
+	}
+
+
 	bool putObjectColliding(Collidable* ob) {
 		if (ob == _objectColliding) return false;
 		//delete _objectColliding;
@@ -35,6 +50,10 @@ public:
 
 	Collidable* getLastObjectColliding() {
 		return _lastObjectColliding;
+	}
+
+	Collidable* getObjectColliding() {
+		return _objectColliding;
 	}
 
 	sf::FloatRect getGlobalBounds() {

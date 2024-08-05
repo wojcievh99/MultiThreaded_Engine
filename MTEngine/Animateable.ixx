@@ -113,6 +113,10 @@ public:
 		}
 	}
 
+	sf::Vector2u getFormalFileImageOffset() {
+		return _formalFileImageOffset;
+	}
+
 	void stopAnimation() {
 		stopAnimating = true;
 	}

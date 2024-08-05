@@ -36,6 +36,10 @@ public:
 		return object_alive;
 	}
 
+	sf::Vector2f getPosition() {
+		return object_position;
+	}
+
 	virtual void garbage() {
 		object_alive = false;
 		std::cout << "[ID: " << _object_id << "](-) \n";

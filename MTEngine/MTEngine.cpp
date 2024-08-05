@@ -20,6 +20,10 @@ int main()
 	auto r = engine.addObject<Rectangle>(
 		std::make_shared<Rectangle>(sf::Vector2f{ 0.f, 1000.f }, sf::Color(50, 180, 80), sf::Vector2f{1500.f, 200.f})
 	);
+
+	auto platform = engine.addObject<Rectangle>(
+		std::make_shared<Rectangle>(sf::Vector2f{ 800.f, 700.f }, sf::Color(100, 100, 100), sf::Vector2f{ 300.f, 50.f })
+	);
 	
 	if (init) engine.run();
 
