@@ -78,26 +78,28 @@ export class Engine {
 			}
 			for (std::pair<uint64_t, Eventable*> e : oc._objectsWithEventsAssociatedWithFunctions) {
 				//std::cout << e.second << " " << e.second->_keyAssociation.size() << std::endl;
-				for (auto const& [key, func] : e.second->_keyAssociation)
-					if (event->type == sf::Event::KeyPressed and event->key.code == key)
-					{
-						Functor f = func; f();
-					}
-				for (auto const& [key, func] : e.second->_rKeyAssociation)
-					if (event->type == sf::Event::KeyReleased and event->key.code == key)
-					{
-						Functor f = func; f();
-					}
-				for (auto const& [button, func] : e.second->_buttonAssociation)
-					if (event->type == sf::Event::MouseButtonPressed and event->mouseButton.button == button)
-					{
-						Functor f = func; f();
-					}
-				for (auto const& [button, func] : e.second->_rButtonAssociation)
-					if (event->type == sf::Event::MouseButtonReleased and event->mouseButton.button == button)
-					{
-						Functor f = func; f();
-					}
+				if (!e.second->isLocked()) {
+					for (auto const& [key, func] : e.second->_keyAssociation)
+						if (event->type == sf::Event::KeyPressed and event->key.code == key)
+						{
+							Functor f = func; f();
+						}
+					for (auto const& [key, func] : e.second->_rKeyAssociation)
+						if (event->type == sf::Event::KeyReleased and event->key.code == key)
+						{
+							Functor f = func; f();
+						}
+					for (auto const& [button, func] : e.second->_buttonAssociation)
+						if (event->type == sf::Event::MouseButtonPressed and event->mouseButton.button == button)
+						{
+							Functor f = func; f();
+						}
+					for (auto const& [button, func] : e.second->_rButtonAssociation)
+						if (event->type == sf::Event::MouseButtonReleased and event->mouseButton.button == button)
+						{
+							Functor f = func; f();
+						}
+				}
 			}
 		}
 	}
@@ -116,7 +118,8 @@ export class Engine {
 
 	void animateAllObjects() {
 		for (auto const& e : oc._objectAnimations) {
-			Functor f = e.second; f();
+			Functor f = e.second.first; f();
+			f = e.second.second; f();
 		}
 	}
 

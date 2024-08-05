@@ -16,7 +16,7 @@ export class OC {
 	std::list<std::pair<uint64_t, Functor>> _objectMoves;
 	std::list<std::pair<uint64_t, Functor>> _objectDraws;
 	std::list<std::pair<uint64_t, Functor>> _objectUpdates;
-	std::list<std::pair<uint64_t, Functor>> _objectAnimations;
+	std::list<std::pair<uint64_t, std::pair<Functor, Functor>>> _objectAnimations;
 	std::list<std::pair<uint64_t, Collidable*>> _objectWithCollisions;
 	std::list<std::pair<uint64_t, Eventable*>> _objectsWithEventsAssociatedWithFunctions;
 
@@ -47,7 +47,7 @@ public:
 			_objectUpdates.push_back({ r->getID(), Functor([x]() { x->updateObject(); }) });
 		}
 		if (Animateable* x = dynamic_cast<Animateable*>(r.get())) {
-			_objectAnimations.push_back({ r->getID(), Functor([x]() { x->animateObject(); }) });
+			_objectAnimations.push_back({ r->getID(), {Functor([x]() { x->animateObject(); }),  Functor([x]() { x->updateAnimation(); })} });
 		}
 		if (Eventable* x = dynamic_cast<Eventable*>(r.get())) {
 			_objectsWithEventsAssociatedWithFunctions.push_back({ r->getID(), x });

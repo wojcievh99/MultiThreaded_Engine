@@ -3,7 +3,13 @@ export module Eventable;
 import Globals;
 
 export class Eventable {
+	bool stopCheckingEvents;
 public:
+	Eventable() : stopCheckingEvents(false) {}
+	~Eventable() {
+		clearAllAssociations();
+	}
+
 	std::unordered_map<sf::Keyboard::Key, Functor> _keyAssociation;
 	std::unordered_map<sf::Mouse::Button, Functor> _buttonAssociation;
 
@@ -25,5 +31,17 @@ public:
 	void addReleaseButtonAssociation(sf::Mouse::Button button, Functor func) {
 		_rButtonAssociation[button] = func;
 	}
+
+	void clearAllAssociations() {
+		_keyAssociation.clear();
+		_buttonAssociation.clear();
+		_rKeyAssociation.clear();
+		_rButtonAssociation.clear();
+	}
+
+	void lockEvents() { stopCheckingEvents = true; }
+	void unlockEvents() { stopCheckingEvents = false; }
 	
+	bool isLocked() { return stopCheckingEvents; }
+
 };
