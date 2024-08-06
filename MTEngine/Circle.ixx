@@ -52,7 +52,7 @@ public:
 	}
 
 	bool isInCollisionWith(Collidable* ob) {
-		sf::Vector2f obPosition = dynamic_cast<Base*>(ob)->getCurrentPosition();
+		sf::Vector2f obPosition = dynamic_cast<Base*>(ob)->getPosition();
 		float obRadius = dynamic_cast<Circle*>(ob)->getRadius();
 
 		float diagonal =
@@ -70,14 +70,14 @@ public:
 
 	void afterCollision() {
 		if (Circle* other = dynamic_cast<Circle*>(_objectColliding)) {
-			float tanAlpha = ((this->getCurrentPosition().x + this->_radius) - (other->getCurrentPosition().x + other->_radius))
-						   / ((this->getCurrentPosition().y + this->_radius) - (other->getCurrentPosition().y + other->_radius));
+			float tanAlpha = ((this->getPosition().x + this->_radius) - (other->getPosition().x + other->_radius))
+						   / ((this->getPosition().y + this->_radius) - (other->getPosition().y + other->_radius));
 			float alphaRadians = std::abs(std::atanf(tanAlpha));
 
 			//std::cout << "[ID: " << this->getID() << "]tan-1(" << tanAlpha << ") = " << alphaRadians << "\n";
 
 			sf::Vector2f newMoveDirection = sf::Vector2f{ 0.f, 0.f };
-			if (this->getCurrentPosition().x > other->getCurrentPosition().x) {
+			if (this->getPosition().x > other->getPosition().x) {
 				newMoveDirection.x = this->getCurrentMoveDir().x
 					+ std::sin(alphaRadians) * this->_radius / 48.5f;
 			}
@@ -85,7 +85,7 @@ public:
 				newMoveDirection.x = this->getCurrentMoveDir().x
 					- std::sin(alphaRadians) * this->_radius / 48.5f;
 			}
-			if (this->getCurrentPosition().y > other->getCurrentPosition().y) {
+			if (this->getPosition().y > other->getPosition().y) {
 				newMoveDirection.y = this->getCurrentMoveDir().y
 					+ std::cos(alphaRadians) * this->_radius / 48.5f;
 				//std::cout << "cos(" << alphaRadians << ") = " << std::cos(alphaRadians) << std::endl;

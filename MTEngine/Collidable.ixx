@@ -34,7 +34,39 @@ public:
 		}
 		return NONE;
 	}
+	direc getHorizontalDirectionOfCollidingObject() {
+		if (_objectColliding) {
+			Base* obB = dynamic_cast<Base*>(_objectColliding);
+			Base* thisB = dynamic_cast<Base*>(this);
 
+			if (thisB->getPosition().x < obB->getPosition().x) return RIGHT;
+			else if (thisB->getPosition().x > obB->getPosition().x) return LEFT;
+
+		}
+		return NONE;
+	}
+
+	bool isCollisionHorizontal() {
+		if (_objectColliding) {
+
+			if (this->getGlobalBounds().top < _objectColliding->getGlobalBounds().top
+				and this->getGlobalBounds().top + this->getGlobalBounds().height - 5.f > 
+				_objectColliding->getGlobalBounds().top) return true;
+
+		}
+		return false;
+	}
+
+	bool isCollisionFullLengthHorizontal() {
+		if (_objectColliding) {
+
+			if (this->getGlobalBounds().top > _objectColliding->getGlobalBounds().top
+				and this->getGlobalBounds().top + this->getGlobalBounds().height - 15.f <
+				_objectColliding->getGlobalBounds().top + _objectColliding->getGlobalBounds().height) return true;
+
+		}
+		return false;
+	}
 
 	bool putObjectColliding(Collidable* ob) {
 		if (ob == _objectColliding) return false;

@@ -25,6 +25,13 @@ public:
 	void updateObject() {
 		this->globalBounds = body.getGlobalBounds();
 	}
+	
+	void resetToRender() {
+		body.setPosition({ body.getPosition().x - 1500.f, body.getPosition().y });
+	}
 
+	sf::Vector2f getDimensions() {
+		return body.getSize();
+	}
 
 };

@@ -42,15 +42,15 @@ public:
 		this->addKeyAssociation(sf::Keyboard::D, Functor(
 			[this]() {
 				sf::Vector2f cmd = this->getCurrentMoveDir();
-				this->setMoveDirection({ cmd.x + 1, cmd.y });
+				this->setMoveDirection({ cmd.x + .5f, cmd.y });
 			}
 		));
 		this->addReleaseKeyAssociation(sf::Keyboard::D, Functor(
 			[this]() {
 				sf::Vector2f cmd = this->getCurrentMoveDir();
 				if (cmd.x > 0.f) {
-					if (std::abs(cmd.x) == 3.f) this->setMoveDirection({ cmd.x - 3, cmd.y });
-					else this->setMoveDirection({ cmd.x - 1, cmd.y });
+					if (std::abs(cmd.x) == 1.5f) this->setMoveDirection({ cmd.x - 1.5f, cmd.y });
+					else this->setMoveDirection({ cmd.x - .5f, cmd.y });
 				}
 				else this->setMoveDirection({ 0.f, cmd.y });
 			}
@@ -58,15 +58,15 @@ public:
 		this->addKeyAssociation(sf::Keyboard::A, Functor(
 			[this]() {
 				sf::Vector2f cmd = this->getCurrentMoveDir();
-				this->setMoveDirection({ cmd.x - 1.f, cmd.y });
+				this->setMoveDirection({ cmd.x - .5f, cmd.y });
 			}
 		));
 		this->addReleaseKeyAssociation(sf::Keyboard::A, Functor(
 			[this]() {
 				sf::Vector2f cmd = this->getCurrentMoveDir();
 				if (cmd.x < 0.f) {
-					if (std::abs(cmd.x) == 3.f) this->setMoveDirection({ cmd.x + 3, cmd.y });
-					else this->setMoveDirection({ cmd.x + 1, cmd.y });
+					if (std::abs(cmd.x) == 1.5f) this->setMoveDirection({ cmd.x + 1.5f, cmd.y });
+					else this->setMoveDirection({ cmd.x + .5f, cmd.y });
 				} 
 				else this->setMoveDirection({ 0.f, cmd.y });
 			}
@@ -74,13 +74,13 @@ public:
 		this->addKeyAssociation(sf::Keyboard::LShift, Functor(
 			[this]() {
 				sf::Vector2f cmd = this->getCurrentMoveDir();
-				if (std::abs(cmd.x) == 1.f) this->setMoveDirection({ cmd.x * 3.f, cmd.y });
+				if (std::abs(cmd.x) == .5f) this->setMoveDirection({ cmd.x * 3.f, cmd.y });
 			}
 		));
 		this->addReleaseKeyAssociation(sf::Keyboard::LShift, Functor(
 			[this]() {
 				sf::Vector2f cmd = this->getCurrentMoveDir();
-				if (std::abs(cmd.x) == 3.f) {
+				if (std::abs(cmd.x) == 1.5f) {
 					this->setMoveDirection({ cmd.x / 3.f, cmd.y });
 				}
 			}
@@ -130,19 +130,19 @@ public:
 				else if (prevMoveDir.x == 0.f) {
 					this->setFormalTexFile("Idle", { 7, 1 });
 				}
-				else if (prevMoveDir.x == 1.f) {
+				else if (prevMoveDir.x == .5f) {
 					this->setFormalTexFile("Walk", { 7, 1 });
 					this->body.setScale(scale);
 				}
-				else if (prevMoveDir.x == -1.f) {
+				else if (prevMoveDir.x == -.5f) {
 					this->setFormalTexFile("Walk", { 7, 1 });
 					this->body.setScale({ -scale.x, scale.y });
 				}
-				else if (prevMoveDir.x == 3.f) {
+				else if (prevMoveDir.x == 1.5f) {
 					this->setFormalTexFile("Run", { 8, 1 });
 					this->body.setScale(scale);
 				}
-				else if (prevMoveDir.x == -3.f) {
+				else if (prevMoveDir.x == -1.5f) {
 					this->setFormalTexFile("Run", { 8, 1 });
 					this->body.setScale({ -scale.x, scale.y });
 				}
@@ -152,18 +152,21 @@ public:
 	}
 
 	void updateObject() {
+		if (this->body.getPosition().x > 1500.f)
+			this->body.setPosition({ 20.f , this->body.getPosition().y });
 		this->object_position = body.getPosition();
 
 		this->globalBounds =
 		{
-			{body.getGlobalBounds().left + 60.f, body.getGlobalBounds().top + 50.f},
-			{body.getGlobalBounds().width - 120.f, body.getGlobalBounds().height - 50.f}
+			{body.getGlobalBounds().left + 60.f, body.getGlobalBounds().top},
+			{body.getGlobalBounds().width - 120.f, body.getGlobalBounds().height}
 		};
 
 		if (std::abs(this->getCurrentMoveDir().y) > 0.f or this->_objectColliding == nullptr) 
 		{
 			this->setMoveDirection({ this->getCurrentMoveDir().x, this->getCurrentMoveDir().y + .1f });
 		}
+
 	}
 
 	void afterCollision() {
@@ -171,7 +174,11 @@ public:
 		{
 		case DOWN:
 			this->setMoveDirection({ prevMoveDir.x, 0.f });
-			this->setFormalTexFile("Idle", { 7, 1 });
+			//this->setFormalTexFile("Idle", { 7, 1 });
+			this->body.setPosition(
+				{ this->body.getPosition().x, 
+				_objectColliding->getGlobalBounds().top - this->getGlobalBounds().height/2.1f }
+			);
 			this->jumping = false;
 			break;
 		case UP:
@@ -181,6 +188,31 @@ public:
 			break;
 		}
 		
+		if (this->isCollisionFullLengthHorizontal()) {
+			this->setMoveDirection({0.f, 0.f});
+			switch (this->getHorizontalDirectionOfCollidingObject())
+			{
+			case RIGHT:
+				this->body.setPosition({ this->body.getPosition().x - 5.f, this->body.getPosition().y });
+				break;
+			case LEFT:
+				this->body.setPosition({ this->body.getPosition().x + 5.f, this->body.getPosition().y });
+				break;
+			default:
+				break;
+			}
+		}
+		else if (this->isCollisionHorizontal()) {
+			if (prevMoveDir.x > 0.f) {
+				this->body.setPosition({ this->body.getPosition().x - 5.f, this->body.getPosition().y });
+			} else if (prevMoveDir.x < 0.f) {
+				this->body.setPosition({ this->body.getPosition().x + 5.f, this->body.getPosition().y });
+			}
+
+			this->setMoveDirection({ 0.f, 0.f });
+
+		} 
+
 	
 	}
 

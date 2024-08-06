@@ -28,10 +28,6 @@ public:
 		return _object_className;
 	}
 
-	sf::Vector2f getCurrentPosition() {
-		return object_position;
-	}
-
 	bool isObjectAlive() {
 		return object_alive;
 	}
@@ -44,5 +40,8 @@ public:
 		object_alive = false;
 		std::cout << "[ID: " << _object_id << "](-) \n";
 	}
+
+	virtual void resetToRender() {}
+	virtual sf::Vector2f getDimensions() { return { 0.f, 0.f }; }
 
 };

@@ -61,7 +61,7 @@ export class Engine {
 
 			while (isWindowOpen) {
 				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
-				if (elapsedTime - prevTime > (100 / 12)) {
+				if (elapsedTime - prevTime > (100 / 18)) {
 
 					prevTime = elapsedTime;
 					checkAndExecuteCollisionsInAllObjects();
@@ -179,7 +179,7 @@ public:
 
 			while (window->isOpen()) {
 				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
-				if (elapsedTime - prevTime > 100 / 12) {
+				if (elapsedTime - prevTime > 100 / 18) {
 					prevTime = elapsedTime;
 
 					checkAndExecuteEventsInAllObjects();
