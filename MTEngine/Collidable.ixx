@@ -9,7 +9,7 @@ protected:
 	Collidable* _lastObjectColliding;
 public:
 	Collidable() : _objectColliding(nullptr), _lastObjectColliding(nullptr) {}
-	~Collidable() { delete _objectColliding, _lastObjectColliding; }
+	~Collidable() { delete _objectColliding; delete _lastObjectColliding; }
 
 	virtual bool isInCollisionWith(Collidable* ob) = 0;
 	virtual void afterCollision() = 0;

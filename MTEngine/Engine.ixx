@@ -4,6 +4,7 @@ import Globals;
 import OC;
 
 export class Engine {
+	int framerate;
 
 	static void drawAllObjects() {
 		window->setActive(false);
@@ -57,16 +58,10 @@ export class Engine {
 	static void watchCollisionThread() {
 		if (window) {
 
-			sf::Int32 prevTime = globalClock.getElapsedTime().asMilliseconds();
-
 			while (isWindowOpen) {
-				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
-				if (elapsedTime - prevTime > (100 / 12)) {
-
-					prevTime = elapsedTime;
 					checkAndExecuteCollisionsInAllObjects();
-				}
 			}
+		
 		}
 	}
 
@@ -137,7 +132,7 @@ export class Engine {
 	}
 
 public:
-	Engine() {
+	Engine() : framerate(0) {
 		std::cout << "<- Engine Loading... ->\n";
 	}
 
@@ -147,11 +142,12 @@ public:
 		return std::weak_ptr<T>(std::dynamic_pointer_cast<T>(std::move(r)));
 	}
 
-	bool init(std::pair<int, int> _windowSize, std::string _windowName, bool _resizable, int _framerate) {
+	bool init(std::pair<int, int> _windowSize, std::string _windowName, bool _resizable, int _framerate = 0) {
 		window = std::make_unique<sf::RenderWindow>(
 			sf::VideoMode(_windowSize.first, _windowSize.second),
 			_windowName, _resizable ? (sf::Style::Default) : (sf::Style::Close));
-		window->setFramerateLimit(_framerate);
+		if (_framerate) window->setFramerateLimit(_framerate);
+		framerate = _framerate;
 		window->setVerticalSyncEnabled(true);
 		window->setKeyRepeatEnabled(false);
 		window->setPosition({ 0,0 });
@@ -179,7 +175,7 @@ public:
 
 			while (window->isOpen()) {
 				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
-				if (elapsedTime - prevTime > 100 / 12) {
+				if (elapsedTime - prevTime > 1000 / framerate * 2) {
 					prevTime = elapsedTime;
 
 					checkAndExecuteEventsInAllObjects();

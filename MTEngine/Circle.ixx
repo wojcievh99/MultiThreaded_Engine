@@ -34,10 +34,10 @@ public:
 		this->object_position = _body.getPosition();
 		this->_radius = _body.getRadius();
 
-		if ((this->object_position.x + 2*_radius) >= 1500 or this->object_position.x <= 0) {
+		if ((this->object_position.x + 2*_radius) >= window->getSize().x or this->object_position.x <= 0) {
 			this->setMoveDirection(sf::Vector2f{ -this->getCurrentMoveDir().x, this->getCurrentMoveDir().y });
 		} 
-		if ((this->object_position.y + 2*_radius) >= 1200 or this->object_position.y <= 0) {
+		if ((this->object_position.y + 2*_radius) >= window->getSize().y or this->object_position.y <= 0) {
 			this->setMoveDirection(sf::Vector2f{ this->getCurrentMoveDir().x, -this->getCurrentMoveDir().y });
 		}
 
@@ -70,43 +70,19 @@ public:
 
 	void afterCollision() {
 		if (Circle* other = dynamic_cast<Circle*>(_objectColliding)) {
-			float tanAlpha = ((this->getCurrentPosition().x + this->_radius) - (other->getCurrentPosition().x + other->_radius))
-						   / ((this->getCurrentPosition().y + this->_radius) - (other->getCurrentPosition().y + other->_radius));
-			float alphaRadians = std::abs(std::atanf(tanAlpha));
-
-			//std::cout << "[ID: " << this->getID() << "]tan-1(" << tanAlpha << ") = " << alphaRadians << "\n";
-
-			sf::Vector2f newMoveDirection = sf::Vector2f{ 0.f, 0.f };
-			if (this->getCurrentPosition().x > other->getCurrentPosition().x) {
-				newMoveDirection.x = this->getCurrentMoveDir().x
-					+ std::sin(alphaRadians) * this->_radius / 48.5f;
-			}
-			else {
-				newMoveDirection.x = this->getCurrentMoveDir().x
-					- std::sin(alphaRadians) * this->_radius / 48.5f;
-			}
-			if (this->getCurrentPosition().y > other->getCurrentPosition().y) {
-				newMoveDirection.y = this->getCurrentMoveDir().y
-					+ std::cos(alphaRadians) * this->_radius / 48.5f;
-				//std::cout << "cos(" << alphaRadians << ") = " << std::cos(alphaRadians) << std::endl;
-
-			}
-			else {
-				newMoveDirection.y = this->getCurrentMoveDir().y
-					- std::cos(alphaRadians) * this->_radius / 48.5f;
-				//std::cout << "cos(" << alphaRadians << ") = " << std::cos(alphaRadians) << std::endl;
-			}
-
-			setMoveDirection(newMoveDirection);
-			/*
 			// old logic (works but is less accurate):
-			sf::Vector2f bOb_pos = bOb->getCurrentPosition();
+			sf::Vector2f bOb_pos = other->getCurrentPosition();
 			sf::Vector2f newMoveDirection = sf::Vector2f{
-				(((this->getCurrentPosition().x + this->_radius) - (bOb_pos.x + bOb->_radius)) / 2) / 48.5f + this->getCurrentMoveDir().x,
-				(((this->getCurrentPosition().y + this->_radius) - (bOb_pos.y + bOb->_radius)) / 2) / 48.5f + this->getCurrentMoveDir().y
+				(((this->getCurrentPosition().x + this->_radius) - (bOb_pos.x + other->_radius)) / 2.f) / 500.f + this->getCurrentMoveDir().x,
+				(((this->getCurrentPosition().y + this->_radius) - (bOb_pos.y + other->_radius)) / 2.f) / 500.f + this->getCurrentMoveDir().y
 			};
+
+			//std::cout << this->getID() << ": "
+				//<< this->getCurrentMoveDir().x << " | " << this->getCurrentMoveDir().y << " <to> "
+				//<< newMoveDirection.x << " | " << newMoveDirection.y << std::endl;
+  
 			setMoveDirection(newMoveDirection);
-			*/
+			
 		}
 		else {
 			sf::Vector2f current = getCurrentMoveDir();
