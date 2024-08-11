@@ -73,8 +73,10 @@ public:
 			// old logic (works but is less accurate):
 			sf::Vector2f bOb_pos = other->getCurrentPosition();
 			sf::Vector2f newMoveDirection = sf::Vector2f{
-				(((this->getCurrentPosition().x + this->_radius) - (bOb_pos.x + other->_radius)) / 2.f) / 500.f + this->getCurrentMoveDir().x,
-				(((this->getCurrentPosition().y + this->_radius) - (bOb_pos.y + other->_radius)) / 2.f) / 500.f + this->getCurrentMoveDir().y
+				(((this->getCurrentPosition().x + this->_radius) - (bOb_pos.x + other->_radius)) / (this->_radius / other->_radius)) 
+				/ 1000.f + this->getCurrentMoveDir().x / 2.f,
+				(((this->getCurrentPosition().y + this->_radius) - (bOb_pos.y + other->_radius)) / (this->_radius / other->_radius))
+				/ 1000.f + this->getCurrentMoveDir().y / 2.f
 			};
 
 			//std::cout << this->getID() << ": "

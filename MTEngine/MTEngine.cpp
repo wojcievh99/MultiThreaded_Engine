@@ -11,31 +11,33 @@ import Rectangle;
 int main()
 {
 	//						(size, windowName, resizable, framerate);
-	bool init = engine.init({ 2000, 1300 }, "TEST", false, 10000);
+	bool init = engine.init({ 2000, 1300 }, "TEST", false, 100000);
 
 	std::random_device rd;
 
 	std::uniform_real_distribution<float> posX(100.f, 1900.f);
 	std::uniform_real_distribution<float> posY(100.f, 1200.f);
 
-	std::uniform_real_distribution<float> move(-.005f, .005f);
+	std::uniform_real_distribution<float> move(-.001f, .001f);
 
-	std::uniform_int_distribution<int> rgb(50, 255);
+	std::uniform_real_distribution<float> radius(5.f, 15.f);
 
-	for (int i = 500; i--;) {
+	std::uniform_int_distribution<int> rgb(100, 255);
+
+
+	
+	for (int i = 350; i--;) {
 		auto r = engine.addObject<Circle>(
 			std::make_shared<Circle>(sf::Vector2f{ posX(rd), posY(rd) },
-				sf::Vector2f{ move(rd), move(rd) }, 10.f, sf::Color(rgb(rd), rgb(rd), rgb(rd))
+				sf::Vector2f{ move(rd), move(rd) }, radius(rd), sf::Color(rgb(rd), rgb(rd), rgb(rd))
 			));
 	}
+	
 		
 	
 	if (init) engine.run();
 
 	return 0;
-
-	
-	
 }
 
 
