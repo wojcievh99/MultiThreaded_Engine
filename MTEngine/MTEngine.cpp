@@ -7,20 +7,49 @@ import Engine;
 import Circle;
 import Player;
 import Rectangle;
+import Line;
+
+import Globals;
 
 int main()
 {
+	sf::Int32 __timeInterval;
+
 	//						(size, windowName, resizable, framerate);
 	bool init = engine.init({ 1500, 1200 }, "TEST", false, 60);
-
-	auto p = engine.addObject<Player>(
-		std::make_shared<Player>(sf::Vector2f{ 100.f, 900.f }, sf::Vector2f{ 2.f, 2.f })
-	);
-
-	auto r = engine.addObject<Rectangle>(
-		std::make_shared<Rectangle>(sf::Vector2f{ 0.f, 1000.f }, sf::Color(50, 180, 80), sf::Vector2f{1500.f, 200.f})
-	);
 	
+	/*
+	auto c = engine.addObject<Circle>(std::make_shared<Circle>(sf::Vector2f{ 700.f, 500.f }, sf::Vector2f(0.f, 0.f), 50.f, sf::Color::White));
+
+	c.lock()->addKeyAssociation(sf::Keyboard::D, Functor(
+		[&__timeInterval]() {
+			__timeInterval = globalClock.getElapsedTime().asMilliseconds();
+		}
+	));
+	c.lock()->addReleaseKeyAssociation(sf::Keyboard::D, Functor(
+		[c, &__timeInterval]() {
+			__timeInterval -= globalClock.getElapsedTime().asMilliseconds();
+			c.lock()->setMoveDirection(sf::Vector2f{0.005f * abs(__timeInterval), 0.f});
+		}
+	));
+	*/
+
+	auto l = engine.addObject<Line>(std::make_shared<Line>(
+		std::make_pair( sf::Vector2f{700.f, 100.f}, sf::Vector2f{900.f, 1000.f} )
+	));
+
+	l.lock()->addKeyAssociation(sf::Keyboard::D, Functor(
+		[&__timeInterval]() {
+			__timeInterval = globalClock.getElapsedTime().asMilliseconds();
+		}
+	));
+	l.lock()->addReleaseKeyAssociation(sf::Keyboard::D, Functor(
+		[l, &__timeInterval]() {
+			__timeInterval -= globalClock.getElapsedTime().asMilliseconds();
+			l.lock()->setMoveDirection(sf::Vector2f{ 0.005f * abs(__timeInterval), 0.f });
+		}
+	));
+
 	if (init) engine.run();
 
 	return 0;

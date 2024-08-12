@@ -1,6 +1,7 @@
 export module Circle;
 
 import Globals;
+
 import Base;
 import Drawable;
 import Moveable;
@@ -34,15 +35,6 @@ public:
 		this->object_position = _body.getPosition();
 		this->_radius = _body.getRadius();
 
-		if ((this->object_position.x + 2*_radius) >= 1500 or this->object_position.x <= 0) {
-			this->setMoveDirection(sf::Vector2f{ -this->getCurrentMoveDir().x, this->getCurrentMoveDir().y });
-		} 
-		if ((this->object_position.y + 2*_radius) >= 1200 or this->object_position.y <= 0) {
-			this->setMoveDirection(sf::Vector2f{ this->getCurrentMoveDir().x, -this->getCurrentMoveDir().y });
-		}
-
-		//std::cout << this->object_position.x << "; " << this->object_position.y << std::endl;
-
 		moveObject();
 	}
 
@@ -69,50 +61,30 @@ public:
 	};
 
 	void afterCollision() {
-		if (Circle* other = dynamic_cast<Circle*>(_objectColliding)) {
-			float tanAlpha = ((this->getCurrentPosition().x + this->_radius) - (other->getCurrentPosition().x + other->_radius))
-						   / ((this->getCurrentPosition().y + this->_radius) - (other->getCurrentPosition().y + other->_radius));
-			float alphaRadians = std::abs(std::atanf(tanAlpha));
+		if (this->getCurrentMoveDir() != sf::Vector2f{ 0.f, 0.f }) {
+			if (Circle* other = dynamic_cast<Circle*>(_objectColliding)) {
+				// old logic (works but is less accurate):
+				sf::Vector2f bOb_pos = other->getCurrentPosition();
+				sf::Vector2f newMoveDirection = sf::Vector2f{
+					(((this->getCurrentPosition().x + this->_radius) - (bOb_pos.x + other->_radius)) / (this->_radius / other->_radius))
+					/ 1000.f + this->getCurrentMoveDir().x / 2.f,
+					(((this->getCurrentPosition().y + this->_radius) - (bOb_pos.y + other->_radius)) / (this->_radius / other->_radius))
+					/ 1000.f + this->getCurrentMoveDir().y / 2.f
+				};
 
-			//std::cout << "[ID: " << this->getID() << "]tan-1(" << tanAlpha << ") = " << alphaRadians << "\n";
+				//std::cout << this->getID() << ": "
+					//<< this->getCurrentMoveDir().x << " | " << this->getCurrentMoveDir().y << " <to> "
+					//<< newMoveDirection.x << " | " << newMoveDirection.y << std::endl;
 
-			sf::Vector2f newMoveDirection = sf::Vector2f{ 0.f, 0.f };
-			if (this->getCurrentPosition().x > other->getCurrentPosition().x) {
-				newMoveDirection.x = this->getCurrentMoveDir().x
-					+ std::sin(alphaRadians) * this->_radius / 48.5f;
-			}
-			else {
-				newMoveDirection.x = this->getCurrentMoveDir().x
-					- std::sin(alphaRadians) * this->_radius / 48.5f;
-			}
-			if (this->getCurrentPosition().y > other->getCurrentPosition().y) {
-				newMoveDirection.y = this->getCurrentMoveDir().y
-					+ std::cos(alphaRadians) * this->_radius / 48.5f;
-				//std::cout << "cos(" << alphaRadians << ") = " << std::cos(alphaRadians) << std::endl;
+				setMoveDirection(newMoveDirection);
 
 			}
 			else {
-				newMoveDirection.y = this->getCurrentMoveDir().y
-					- std::cos(alphaRadians) * this->_radius / 48.5f;
-				//std::cout << "cos(" << alphaRadians << ") = " << std::cos(alphaRadians) << std::endl;
+				sf::Vector2f current = getCurrentMoveDir();
+				setMoveDirection({ -current.x, -current.y });
 			}
-
-			setMoveDirection(newMoveDirection);
-			/*
-			// old logic (works but is less accurate):
-			sf::Vector2f bOb_pos = bOb->getCurrentPosition();
-			sf::Vector2f newMoveDirection = sf::Vector2f{
-				(((this->getCurrentPosition().x + this->_radius) - (bOb_pos.x + bOb->_radius)) / 2) / 48.5f + this->getCurrentMoveDir().x,
-				(((this->getCurrentPosition().y + this->_radius) - (bOb_pos.y + bOb->_radius)) / 2) / 48.5f + this->getCurrentMoveDir().y
-			};
-			setMoveDirection(newMoveDirection);
-			*/
+			moveObject();
 		}
-		else {
-			sf::Vector2f current = getCurrentMoveDir();
-			setMoveDirection({ -current.x, -current.y });
-		}
-		moveObject(); // safety: still the logic&calc thread is working linearly.
 	};
 
 };

@@ -185,6 +185,7 @@
     <ClCompile Include="Eventable.ixx" />
     <ClCompile Include="Functor.ixx" />
     <ClCompile Include="Globals.ixx" />
+    <ClCompile Include="Line.ixx" />
     <ClCompile Include="Moveable.ixx" />
     <ClCompile Include="MTEngine.cpp" />
     <ClCompile Include="OC.ixx" />
