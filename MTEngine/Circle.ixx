@@ -20,6 +20,7 @@ public:
 		_body.setRadius(_radius);
 		_body.setFillColor(_c);
 		_body.setPosition(_pos);
+		this->globalBounds = _body.getGlobalBounds();
 	}
 
 	float getRadius() {
@@ -31,6 +32,7 @@ public:
 	}
 
 	void updateObject() {
+		this->globalBounds = _body.getGlobalBounds();
 		this->object_position = _body.getPosition();
 		this->_radius = _body.getRadius();
 

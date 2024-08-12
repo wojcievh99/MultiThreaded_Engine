@@ -34,12 +34,15 @@ export class Engine {
 	static void checkAndExecuteCollisionsInAllObjects() {
 		for (std::pair<uint64_t, Collidable*> e : oc._objectWithCollisions) {
 			for (std::pair<uint64_t, Collidable*> otherObject : oc._objectWithCollisions) {
-				if (e.first != otherObject.first) {
+				if (e.first != otherObject.first and e.second->isCollisionPossible(otherObject.second)
+					or otherObject.second->getLastObjectColliding() == e.second ) { // <-- [last one - safety]
+					possibleCollisionCount++;
 					if (e.second->isInCollisionWith(otherObject.second)) {
 						if (e.second->putObjectColliding(otherObject.second)) {
 							//std::cout << "#(" << e.first << " and " << otherObject.first << "): afterCollision processing...\n";
 							e.second->putLastObjectColliding(otherObject.second);
 							e.second->afterCollision();
+							collisionCount++;
 						}
 					}
 					else {
@@ -69,6 +72,14 @@ export class Engine {
 		while (window->pollEvent(*event)) {
 			if (event->type == sf::Event::Closed) {
 				isWindowOpen = false;
+				for (auto e : oc._database) {
+					for (auto e2 : e.second) {
+						e2.second->garbage();
+					}
+				}
+				deleteAllObjects();
+				std::cout << "\n\nAll Collisions: " << collisionCount << "\n";
+				std::cout << "Possible Collisions: " << possibleCollisionCount << "\n\n";
 				break;
 			}
 			for (std::pair<uint64_t, Eventable*> e : oc._objectsWithEventsAssociatedWithFunctions) {
@@ -186,7 +197,6 @@ public:
 					
 				}
 			} 
-
 		}
 		else {
 			std::cout << "!- Init the window -!\n";

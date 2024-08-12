@@ -16,3 +16,6 @@ export std::unique_ptr<sf::RenderWindow> window;
 export std::unique_ptr<sf::Event> event;
 
 export uint64_t globalID = 0;
+
+export unsigned long long int collisionCount = 0;
+export unsigned long long int possibleCollisionCount = 0;
