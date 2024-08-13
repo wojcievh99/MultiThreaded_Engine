@@ -189,6 +189,7 @@
     <ClCompile Include="Moveable.ixx" />
     <ClCompile Include="MTEngine.cpp" />
     <ClCompile Include="OC.ixx" />
+    <ClCompile Include="Particle.ixx" />
     <ClCompile Include="Player.ixx" />
     <ClCompile Include="Rectangle.ixx" />
     <ClCompile Include="Updateable.ixx" />

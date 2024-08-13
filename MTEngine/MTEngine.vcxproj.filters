@@ -84,5 +84,8 @@
     <ClCompile Include="Line.ixx">
       <Filter>Source Files\Engine\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Particle.ixx">
+      <Filter>Source Files\Engine\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

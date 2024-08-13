@@ -38,18 +38,6 @@ int main()
 		std::make_pair( sf::Vector2f{700.f, 100.f}, sf::Vector2f{900.f, 1000.f} )
 	));
 
-	l.lock()->addKeyAssociation(sf::Keyboard::D, Functor(
-		[&__timeInterval]() {
-			__timeInterval = globalClock.getElapsedTime().asMilliseconds();
-		}
-	));
-	l.lock()->addReleaseKeyAssociation(sf::Keyboard::D, Functor(
-		[l, &__timeInterval]() {
-			__timeInterval -= globalClock.getElapsedTime().asMilliseconds();
-			l.lock()->setMoveDirection(sf::Vector2f{ 0.005f * abs(__timeInterval), 0.f });
-		}
-	));
-
 	if (init) engine.run();
 
 	return 0;

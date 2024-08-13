@@ -9,25 +9,33 @@ import Eventable;
 import Collidable;
 import Updateable;
 
-export class Line : public Base, public Drawable, public Moveable, public Eventable, public Updateable {
+import Particle;
+import Engine;
+
+export class Line : public Base, public Drawable, public Eventable, public Updateable {
 	sf::VertexArray lines;
-
-	size_t lastMovedPoint;
-	sf::Int32 prevTime;
-
+	std::vector<std::shared_ptr<Particle>> particles;
 public:
 	Line(std::pair<sf::Vector2f, sf::Vector2f> points) 
-		: Base(typeid(this).raw_name(), points.first), lastMovedPoint(1), 
-		prevTime(globalClock.getElapsedTime().asMilliseconds())
+		: Base(typeid(this).raw_name(), points.first), particles({})
 	{
 
-		lines = sf::VertexArray(sf::LinesStrip, 100);
+		lines = sf::VertexArray(sf::LinesStrip, 20);
 
-		for (size_t i = 0; i < 100; i++) {
-			lines[i].position = sf::Vector2f{
-				points.first.x + ((points.second.x - points.first.x) / 100) * i,
-				points.first.y + ((points.second.y - points.first.y) / 100) * i
-			};
+		for (size_t i = 0; i < 20; i++) {
+			particles.push_back(std::make_shared<Particle>(
+				i > 0 ? particles[i - 1] : nullptr,
+				sf::Vector2f{
+					points.first.x + ((points.second.x - points.first.x) / 19) * i,
+					points.first.y + ((points.second.y - points.first.y) / 19) * i
+				},
+				(sqrt(
+					pow((points.second.x - points.first.x), 2) +
+					pow((points.second.y - points.first.y), 2)
+				) / 20.f) 
+			));
+			engine.addObject<Particle>(particles[i]);
+			lines[i].position = particles[i]->getCurrentPosition();
 		}
 
 	}
@@ -37,39 +45,9 @@ public:
 	}
 
 	void updateObject() {
-		float drv = (lines[0].position.x - lines[99].position.x);
-		if (drv != 0.f) {
-			sf::Vector2f cmd = this->getCurrentMoveDir();
-			this->setMoveDirection({ cmd.x + drv / 1000.f, cmd.y});
+		for (size_t i = 0; i < 20; i++) {
+			lines[i].position = particles[i]->getCurrentPosition();
 		}
-		else {
-			this->setMoveDirection({ 0.f, 0.f });
-		}
-	}
-
-	// this is stupid as fuck. make objects to be the points of the line 
-	// and make them update themselfs with their own fucking phisics...
-	// possibly the shittiest code i have ever written.
-	void moveObject() {
-		
-		/*sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
-		if (elapsedTime - prevTime > 10) {*/
-
-			if (this->getCurrentMoveDir() != sf::Vector2f{ 0.f, 0.f }) {
-				//prevTime = elapsedTime;
-				lines[lastMovedPoint].position.x += this->getCurrentMoveDir().x;
-				lines[lastMovedPoint].position.y += this->getCurrentMoveDir().y;
-				if (lastMovedPoint == 99) {
-					this->setMoveDirection(sf::Vector2f{ 0.f, 0.f });
-					lastMovedPoint = 1;
-				}
-				else {
-					lastMovedPoint++;
-				}
-			//}
-
-		}
-			
 	}
 
 };
