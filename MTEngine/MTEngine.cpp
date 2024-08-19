@@ -7,41 +7,49 @@ import Engine;
 import Circle;
 import Player;
 import Rectangle;
+import Line;
+import Graph;
 
 int main()
 {
+	std::pair<int, int> windowSize = std::make_pair( 1800, 1400 );
+	std::pair<int, int> unitSize = std::make_pair(50, 50);
+
 	//						(size, windowName, resizable, framerate);
-	bool init = engine.init({ 1500, 1200 }, "TEST", false, 60);
+	bool init = engine.init(windowSize, "FunctionRecall", false, 60);
 
-	auto p = engine.addObject<Player>(
-		std::make_shared<Player>(sf::Vector2f{ 100.f, 900.f }, sf::Vector2f{ 2.f, 2.f })
-	);
+	for (int i = 0; i <= windowSize.first; i += unitSize.first) {
+		if (i != unitSize.first * (windowSize.first / (2 * unitSize.first)))
+			engine.addObject<Line>(std::make_shared<Line>(
+				std::make_pair(sf::Vector2f{ i + 0.f, 0.f }, sf::Vector2f{ i + 0.f, windowSize.second + 0.f }),
+				sf::Color(80, 80, 80)
+			));
+		else 
+			engine.addObject<Line>(std::make_shared<Line>(
+				std::make_pair(sf::Vector2f{ i + 0.f, 0.f }, sf::Vector2f{ i + 0.f, windowSize.second + 0.f })
+			));
+	}
 
-	auto r = engine.addObject<Rectangle>(
-		std::make_shared<Rectangle>(sf::Vector2f{ 0.f, 1000.f }, sf::Color(50, 180, 80), sf::Vector2f{1500.f, 200.f})
-	);
+	for (int i = 0; i <= windowSize.second; i += unitSize.second) {
+		if (i != unitSize.second * (windowSize.second / (2 * unitSize.second)))
+			engine.addObject<Line>(std::make_shared<Line>(
+				std::make_pair(sf::Vector2f{ 0.f, i + 0.f }, sf::Vector2f{ windowSize.first + 0.f, i + 0.f }),
+				sf::Color(80, 80, 80)
+			));
+		else
+			engine.addObject<Line>(std::make_shared<Line>(
+				std::make_pair(sf::Vector2f{ 0.f, i + 0.f }, sf::Vector2f{ windowSize.first + 0.f, i + 0.f })
+			));
+	}
+
+	engine.addObject<Graph>(std::make_shared<Graph>(
+		std::make_pair(sf::Vector2f{ 0.f, windowSize.first + 0.f }, sf::Vector2f{0.f, windowSize.second + 0.f}),
+		1.f, sf::Vector2f{unitSize.first + 0.f, unitSize.second + 0.f}, sf::Color::Yellow
+	));
 	
 	if (init) engine.run();
 
 	return 0;
-
-	/*
-		std::random_device rd;
-
-		std::uniform_real_distribution<float> posX(100.f, 1000.f);
-		std::uniform_real_distribution<float> posY(100.f, 900.f);
-
-		std::uniform_real_distribution<float> move(-1.f, 1.f);
-
-		std::uniform_int_distribution<int> rgb(0, 255);
-
-		for (int i = 2; i--;) {
-			auto r = engine.addObject<Circle>(
-				std::make_shared<Circle>(sf::Vector2f{ posX(rd), posY(rd) },
-				sf::Vector2f{ move(rd), move(rd) }, 100.f, sf::Color(rgb(rd), rgb(rd), rgb(rd))
-				));
-		}
-	*/
 }
 
 

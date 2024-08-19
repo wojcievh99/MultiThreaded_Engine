@@ -17,7 +17,7 @@ public:
 		std::cout << "[ID: " << _object_id << ", className: " << _object_className << "](+) \n";
 	}
 	~Base() {
-		std::cout << "[ID: " << _object_id << ", className: " << _object_className << "](-) \n";
+		//std::cout << "[ID: " << _object_id << ", className: " << _object_className << "](-) \n";
 	}
 
 	std::uint64_t getID() {

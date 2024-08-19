@@ -175,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Algorithms.ixx" />
     <ClCompile Include="Animateable.ixx" />
     <ClCompile Include="Base.ixx" />
     <ClCompile Include="Circle.ixx" />
@@ -185,6 +186,9 @@
     <ClCompile Include="Eventable.ixx" />
     <ClCompile Include="Functor.ixx" />
     <ClCompile Include="Globals.ixx" />
+    <ClCompile Include="Graph.ixx" />
+    <ClCompile Include="GraphPoint.ixx" />
+    <ClCompile Include="Line.ixx" />
     <ClCompile Include="Moveable.ixx" />
     <ClCompile Include="MTEngine.cpp" />
     <ClCompile Include="OC.ixx" />
