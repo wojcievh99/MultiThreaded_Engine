@@ -175,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Accelerateable.ixx" />
     <ClCompile Include="Animateable.ixx" />
     <ClCompile Include="Base.ixx" />
     <ClCompile Include="Circle.ixx" />
@@ -190,6 +191,7 @@
     <ClCompile Include="MTEngine.cpp" />
     <ClCompile Include="OC.ixx" />
     <ClCompile Include="Particle.ixx" />
+    <ClCompile Include="Physicsable.ixx" />
     <ClCompile Include="Player.ixx" />
     <ClCompile Include="Rectangle.ixx" />
     <ClCompile Include="Updateable.ixx" />

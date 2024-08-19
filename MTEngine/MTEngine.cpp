@@ -35,7 +35,7 @@ int main()
 	*/
 
 	auto l = engine.addObject<Line>(std::make_shared<Line>(
-		std::make_pair( sf::Vector2f{700.f, 100.f}, sf::Vector2f{900.f, 1000.f} )
+		std::make_pair( sf::Vector2f{700.f, 100.f}, sf::Vector2f{1000.f, 200.f}), 2
 	));
 
 	if (init) engine.run();

@@ -15,24 +15,25 @@ import Engine;
 export class Line : public Base, public Drawable, public Eventable, public Updateable {
 	sf::VertexArray lines;
 	std::vector<std::shared_ptr<Particle>> particles;
+	size_t amountOfParticles;
 public:
-	Line(std::pair<sf::Vector2f, sf::Vector2f> points) 
-		: Base(typeid(this).raw_name(), points.first), particles({})
+	Line(std::pair<sf::Vector2f, sf::Vector2f> points, size_t _amountOfParticles)
+		: Base(typeid(this).raw_name(), points.first), particles({}), amountOfParticles(_amountOfParticles)
 	{
 
-		lines = sf::VertexArray(sf::LinesStrip, 20);
+		lines = sf::VertexArray(sf::LinesStrip, amountOfParticles);
 
-		for (size_t i = 0; i < 20; i++) {
+		for (size_t i = 0; i < amountOfParticles; i++) {
 			particles.push_back(std::make_shared<Particle>(
 				i > 0 ? particles[i - 1] : nullptr,
 				sf::Vector2f{
-					points.first.x + ((points.second.x - points.first.x) / 19) * i,
-					points.first.y + ((points.second.y - points.first.y) / 19) * i
+					points.first.x + ((points.second.x - points.first.x) / (amountOfParticles - 1)) * i,
+					points.first.y + ((points.second.y - points.first.y) / (amountOfParticles - 1)) * i
 				},
 				(sqrt(
 					pow((points.second.x - points.first.x), 2) +
 					pow((points.second.y - points.first.y), 2)
-				) / 20.f) 
+				) / (amountOfParticles - 1))
 			));
 			engine.addObject<Particle>(particles[i]);
 			lines[i].position = particles[i]->getCurrentPosition();
@@ -45,7 +46,7 @@ public:
 	}
 
 	void updateObject() {
-		for (size_t i = 0; i < 20; i++) {
+		for (size_t i = 0; i < amountOfParticles; i++) {
 			lines[i].position = particles[i]->getCurrentPosition();
 		}
 	}

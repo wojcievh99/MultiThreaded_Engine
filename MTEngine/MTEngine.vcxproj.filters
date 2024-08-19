@@ -87,5 +87,11 @@
     <ClCompile Include="Particle.ixx">
       <Filter>Source Files\Engine\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Accelerateable.ixx">
+      <Filter>Source Files\Engine\ObjectDerived</Filter>
+    </ClCompile>
+    <ClCompile Include="Physicsable.ixx">
+      <Filter>Source Files\Engine\ObjectDerived</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -106,7 +106,8 @@ export class Engine {
 
 	void moveAllObjects() {
 		for (auto const& e : oc._objectMoves) {
-			Functor f = e.second; f();
+			Functor f = e.second.second; f();
+			f = e.second.first; f();
 		}
 	}
 
