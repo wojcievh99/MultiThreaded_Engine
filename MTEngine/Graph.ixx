@@ -38,19 +38,21 @@ public:
 				std::getline(std::cin, formula);
 				std::cout << "<== Calculating ==>\n";
 
+				// delete old graph (lines)
 				for (size_t i = 0; i < lines.size(); i++) {
 					lines[i].lock()->garbage();
 					lines.erase(lines.begin());
 					i--;
 				}
 
+				// add new positions of points based on new formula 
 				for (int p = 0; p < points.size(); p++) {
 					sf::Vector2f newPos = points[p]->getPosition();
-					/*newPos.y = 24.f * pow((newPos.x - bounds.first.y / 2.f), 2) + 250.f * (newPos.x - bounds.first.y / 2.f) - 20.f;*/
 					newPos.y = bounds.second.y / 2.f - compute(formula, (newPos.x - bounds.first.y / 2.f) / unitSize.x) * unitSize.y;
 					points[p]->setPosition(newPos);
 				}
 
+				// add new lines based on new points to vector-lines and engine to render them
 				for (int i = 0; i < points.size() - 1; i++) {
 					lines.push_back(
 						engine.addObject<Line>(std::make_shared<Line>(

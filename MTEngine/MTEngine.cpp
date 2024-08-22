@@ -44,7 +44,7 @@ int main()
 
 	engine.addObject<Graph>(std::make_shared<Graph>(
 		std::make_pair(sf::Vector2f{ 0.f, windowSize.first + 0.f }, sf::Vector2f{0.f, windowSize.second + 0.f}),
-		1.f, sf::Vector2f{unitSize.first + 0.f, unitSize.second + 0.f}, sf::Color::Yellow
+		unitSize.first / 5.f, sf::Vector2f{unitSize.first + 0.f, unitSize.second + 0.f}, sf::Color::Yellow
 	));
 	
 	if (init) engine.run();
