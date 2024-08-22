@@ -4,11 +4,10 @@ import Globals;
 
 export class Animateable {
 
-	sf::Vector2u _formalFileImageOffset;
-	sf::Vector2u _formalFileGridLayout;
+	std::vector<sf::IntRect> _formalLayoutContainer;
+	std::vector<sf::IntRect> _onetimeLayoutContainer;
 
-	sf::Vector2u _onetimeFileImageOffset;
-	sf::Vector2u _onetimeFileGridLayout;
+	size_t lastIteration;
 
 	std::string folderPath;
 
@@ -18,7 +17,6 @@ export class Animateable {
 	sf::Texture formal_object_tex;
 	sf::Texture onetime_object_tex;
 
-	unsigned int lastFrame;
 	bool oneTimeDone;
 	bool stopAnimating;
 	bool stopAnimatingAfterOT;
@@ -30,42 +28,57 @@ protected:
 	sf::Sprite body;
 
 public:
-	Animateable(std::string _folderPath, sf::Int32 _framerate = 10) : folderPath(_folderPath), framerate(_framerate),
-		_formalFileGridLayout({ 0, 0 }), _formalFileImageOffset({ 0, 0 }),
-		_onetimeFileGridLayout({ 0, 0 }), _onetimeFileImageOffset({ 0, 0 }),
-		lastFrame(0), currentFormalFile(""), currentOneTimeFile(""),
-		oneTimeDone(true), stopAnimating(false), stopAnimatingAfterOT(false) 
+	Animateable(std::string _folderPath, sf::Int32 _framerate = 10) 
+		: folderPath(_folderPath), framerate(_framerate), lastIteration(0),
+		currentFormalFile(""), currentOneTimeFile(""), 
+		oneTimeDone(true), stopAnimating(false), stopAnimatingAfterOT(false)
 	{}
 
 	virtual void updateAnimation() = 0; // override to update so you don't have to inherit from updateable (smart move - saves time)
 
-	bool setFormalTexFile(std::string _file, sf::Vector2u __fileGridLayout) {
+	bool setFormalTexFile(std::string _file, std::string info_file) {
 		if (!stopAnimating) {
 			try {
 				formal_object_tex.loadFromFile(folderPath + "/" + _file + ".png");
 			}
 			catch (int error) { return false; }
 
-			lastFrame = 0;
-			_formalFileGridLayout = __fileGridLayout;
+			lastIteration = 0;
+			_formalLayoutContainer.clear();
+			
+			std::ifstream __file;
+			__file.open(folderPath + "/" + info_file + ".txt");
 
-			_formalFileImageOffset = formal_object_tex.getSize();
-			_formalFileImageOffset.x /= _formalFileGridLayout.x;
-			_formalFileImageOffset.y /= _formalFileGridLayout.y;
-			std::cout << "FileX: " << _formalFileImageOffset.x << std::endl;
-			std::cout << "FileY: " << _formalFileImageOffset.y << std::endl;
+			std::string temp; std::vector<int> tempContainer;
+			while (!__file.eof()) {
+				std::getline(__file, temp, ',');
+
+				for (int i = 4; i--;) {
+					if (i != 0) std::getline(__file, temp, ',');
+					else std::getline(__file, temp);
+
+					tempContainer.push_back(std::stoi(temp));
+				}
+
+				_formalLayoutContainer.push_back(sf::IntRect(
+					tempContainer[0], tempContainer[1],
+					tempContainer[2], tempContainer[3]
+				));
+				tempContainer.clear();
+
+			}
+
+			__file.close();
 
 			currentFormalFile = _file;
 			body.setTexture(this->formal_object_tex);
-
-			body.setOrigin({ this->_formalFileImageOffset.x / 2.f, this->_formalFileImageOffset.y / 2.f });
 
 			return true;
 		}
 		else return false;
 	}
 
-	bool setOneTimeTexFile(std::string _file, sf::Vector2u __fileGridLayout) {
+	bool setOneTimeTexFile(std::string _file, std::string info_file) {
 		if (!stopAnimating) {
 			try {
 				onetime_object_tex.loadFromFile(folderPath + "/" + _file + ".png");
@@ -73,17 +86,35 @@ public:
 			catch (int error) { return false; }
 
 			oneTimeDone = false;
-			lastFrame = 0;
-			_onetimeFileGridLayout = __fileGridLayout;
+			lastIteration = 0;
+			_onetimeLayoutContainer.clear();
 
-			_onetimeFileImageOffset = onetime_object_tex.getSize();
-			_onetimeFileImageOffset.x /= _onetimeFileGridLayout.x;
-			_onetimeFileImageOffset.y /= _onetimeFileGridLayout.y;
+			std::ifstream __file;
+			__file.open(folderPath + "/" + info_file + ".txt");
+
+			std::string temp; std::vector<int> tempContainer;
+			while (!__file.eof()) {
+				std::getline(__file, temp, ',');
+
+				for (int i = 4; i--;) {
+					if (i != 0) std::getline(__file, temp, ',');
+					else std::getline(__file, temp);
+
+					tempContainer.push_back(std::stoi(temp));
+				}
+
+				_onetimeLayoutContainer.push_back(sf::IntRect(
+					tempContainer[0], tempContainer[1],
+					tempContainer[2], tempContainer[3]
+				));
+				tempContainer.clear();
+
+			}
+
+			__file.close();
 
 			currentOneTimeFile = _file;
 			body.setTexture(this->onetime_object_tex);
-
-			body.setOrigin({ this->_onetimeFileImageOffset.x / 2.f, this->_onetimeFileImageOffset.y / 2.f });
 
 			return true;
 		}
@@ -96,27 +127,27 @@ public:
 			if (elapsedTime - prevTime > 1000 / framerate) {
 				prevTime = elapsedTime;
 
-				if (!oneTimeDone) {
-					body.setTextureRect(sf::IntRect(this->_onetimeFileImageOffset.x * this->lastFrame++, 0, _onetimeFileImageOffset.x, _onetimeFileImageOffset.y));
-					if (this->lastFrame > this->_onetimeFileGridLayout.x - 1) {
-						if (stopAnimatingAfterOT) stopAnimation();
-						else {
-							this->lastFrame = 0;
-							oneTimeDone = true;
-							body.setTexture(this->formal_object_tex);
-						}
+				if (oneTimeDone) {
+
+					body.setTextureRect(_formalLayoutContainer[lastIteration]); 
+					body.setOrigin({ _formalLayoutContainer[lastIteration].width / 2.f,  _formalLayoutContainer[lastIteration].height / 2.f });
+					lastIteration++;
+					if (lastIteration == _formalLayoutContainer.size()) lastIteration = 0;
+					
+				}
+				else 
+				{
+					body.setTextureRect(_onetimeLayoutContainer[lastIteration]); 
+					body.setOrigin({ _onetimeLayoutContainer[lastIteration].width / 2.f,  _onetimeLayoutContainer[lastIteration].height / 2.f });
+					lastIteration++;
+					if (lastIteration == _onetimeLayoutContainer.size()) {
+						oneTimeDone = true;
+						lastIteration = 0;
 					}
 				}
-				else {
-					body.setTextureRect(sf::IntRect(this->_formalFileImageOffset.x * this->lastFrame++, 0, _formalFileImageOffset.x, _formalFileImageOffset.y));
-					if (this->lastFrame > this->_formalFileGridLayout.x - 1) this->lastFrame = 0;
-				}
+
 			}
 		}
-	}
-
-	sf::Vector2u getFormalFileImageOffset() {
-		return _formalFileImageOffset;
 	}
 
 	void stopAnimation() {

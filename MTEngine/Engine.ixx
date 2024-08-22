@@ -152,7 +152,7 @@ public:
 	bool init(std::pair<int, int> _windowSize, std::string _windowName, bool _resizable, int _framerate) {
 		window = std::make_unique<sf::RenderWindow>(
 			sf::VideoMode(_windowSize.first, _windowSize.second),
-			_windowName, _resizable ? (sf::Style::Default) : (sf::Style::Close) | sf::Style::Fullscreen);
+			_windowName, _resizable ? (sf::Style::Default) : (sf::Style::Close));//| sf::Style::Fullscreen);
 		window->setFramerateLimit(_framerate);
 		window->setVerticalSyncEnabled(true);
 		window->setKeyRepeatEnabled(false);
