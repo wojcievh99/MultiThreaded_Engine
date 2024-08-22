@@ -5,67 +5,38 @@ import std;
 import Engine;
 
 import Circle;
-import Player;
+import Knight;
 import Rectangle;
 import Base;
 
 import Globals;
 
-std::vector<std::weak_ptr<Base>> v;
-
-void updMap() {
-	float _lastRender = 1490;
-	bool rendered = false;
-
-	auto p = engine.addObject<Player>(
-		std::make_shared<Player>(sf::Vector2f{ 100.f, 500.f }, sf::Vector2f{ 2.f, 2.f })
-	);
-
-	while (isWindowOpen) {
-		if (p.lock()->getPosition().x > _lastRender) {
-			if (!rendered) {
-				rendered = true;
-				for (size_t i = 0; i < v.size(); i++) {
-					if (v[i].lock() ->getPosition().x + v[i].lock()->getDimensions().x < _lastRender)
-					{
-						v[i].lock()->garbage();
-						v.erase(v.begin() + i--);
-						continue;
-					}
-					v[i].lock()->resetToRender();
-				}
-			}
-		}
-		else rendered = false;
-	}
-}
-
 int main()
 {
 
 	//						(size, windowName, resizable, framerate);
-	bool init = engine.init({ 1500, 1200 }, "TEST", false, 60);
+	bool init = engine.init({ 1500, 1200 }, "Killer Queen", false, 800);
 
 	auto r = engine.addObject<Rectangle>(
 		std::make_shared<Rectangle>(sf::Vector2f{ 0.f, 1000.f }, sf::Color(50, 180, 80), sf::Vector2f{1500.f, 200.f})
 	);
 
-	v.push_back(engine.addObject<Rectangle>(
+	auto p = engine.addObject<Knight>(std::make_shared<Knight>(
+		sf::Vector2f{200.f, 900.f}, sf::Vector2f{3.f, 3.f}
+	));
+
+	engine.addObject<Rectangle>(
 		std::make_shared<Rectangle>(sf::Vector2f{ 800.f, 700.f }, sf::Color(100, 100, 100), sf::Vector2f{ 500.f, 300.f })
-	));
-	v.push_back(engine.addObject<Rectangle>(
+	);
+	engine.addObject<Rectangle>(
 		std::make_shared<Rectangle>(sf::Vector2f{ 1300.f, 500.f }, sf::Color(100, 100, 100), sf::Vector2f{ 800.f, 50.f })
-	));
-	v.push_back(engine.addObject<Rectangle>(
+	);
+	engine.addObject<Rectangle>(
 		std::make_shared<Rectangle>(sf::Vector2f{ 2300.f, 300.f }, sf::Color(100, 100, 100), sf::Vector2f{ 500.f, 50.f })
-	));
-	
-	sf::Thread updateMapThread(&updMap);
-	updateMapThread.launch();
+	);
 	
 	if (init) engine.run();
 
-	updateMapThread.wait();
 	return 0;
 
 	/*

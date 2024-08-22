@@ -52,6 +52,8 @@ public:
 			_formalFileImageOffset = formal_object_tex.getSize();
 			_formalFileImageOffset.x /= _formalFileGridLayout.x;
 			_formalFileImageOffset.y /= _formalFileGridLayout.y;
+			std::cout << "FileX: " << _formalFileImageOffset.x << std::endl;
+			std::cout << "FileY: " << _formalFileImageOffset.y << std::endl;
 
 			currentFormalFile = _file;
 			body.setTexture(this->formal_object_tex);

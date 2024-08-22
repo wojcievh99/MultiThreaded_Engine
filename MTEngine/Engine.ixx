@@ -72,7 +72,9 @@ export class Engine {
 
 	void checkAndExecuteEventsInAllObjects() {
 		while (window->pollEvent(*event)) {
-			if (event->type == sf::Event::Closed) {
+			if (event->type == sf::Event::Closed or 
+				event->type == sf::Event::KeyPressed and event->key.code == sf::Keyboard::Escape) 
+			{
 				isWindowOpen = false;
 				break;
 			}
@@ -150,7 +152,7 @@ public:
 	bool init(std::pair<int, int> _windowSize, std::string _windowName, bool _resizable, int _framerate) {
 		window = std::make_unique<sf::RenderWindow>(
 			sf::VideoMode(_windowSize.first, _windowSize.second),
-			_windowName, _resizable ? (sf::Style::Default) : (sf::Style::Close));
+			_windowName, _resizable ? (sf::Style::Default) : (sf::Style::Close) | sf::Style::Fullscreen);
 		window->setFramerateLimit(_framerate);
 		window->setVerticalSyncEnabled(true);
 		window->setKeyRepeatEnabled(false);

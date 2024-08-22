@@ -16,19 +16,18 @@ export class Player : public Base, public Drawable, public Animateable, public M
 
 	bool jumping;
 	bool showBounds;
-	bool fallDamage;
 public:
 	Player(sf::Vector2f _pos, sf::Vector2f _scale) :
-		Base(typeid(this).raw_name(), _pos), Animateable("textures/Player"),
+		Base(typeid(this).raw_name(), _pos), Animateable("textures/KillerQueen/Characters/Knight_1"),
 		Moveable(), prevMoveDir(this->getCurrentMoveDir()), scale({ abs(_scale.x), abs(_scale.y) }),
-		jumping(false), showBounds(false), fallDamage(false)
+		jumping(false), showBounds(false)
 	{
 		body.setPosition(this->object_position);
 		body.setScale(scale);
 
 		this->globalBounds = body.getGlobalBounds();
 
-		this->setFormalTexFile("Idle", { 7, 1 });
+		this->setFormalTexFile("Idle", { 4, 1 });
 
 		this->setMoveDirection({ 0.f, 0.1f });
 
@@ -125,11 +124,11 @@ public:
 			///std::cout << prevMoveDir.x << std::endl;
 			if (!jumping) {
 				if (std::abs(prevMoveDir.y) > 0.f) {
-					this->setFormalTexFile("Jump2", { 5, 1 });
+					this->setFormalTexFile("Jump", { 6, 1 });
 					jumping = true;
 				}
 				else if (prevMoveDir.x == 0.f) {
-					this->setFormalTexFile("Idle", { 7, 1 });
+					this->setFormalTexFile("Idle", { 4, 1 });
 				}
 				else if (prevMoveDir.x == .5f) {
 					this->setFormalTexFile("Walk", { 7, 1 });
@@ -155,7 +154,6 @@ public:
 	void updateObject() {
 		if (this->body.getPosition().x > 1500.f) {
 			this->body.setPosition({ 20.f , this->body.getPosition().y });
-			fallDamage = true;
 		}
 		this->object_position = body.getPosition();
 
@@ -164,15 +162,6 @@ public:
 			{body.getGlobalBounds().left + 60.f, body.getGlobalBounds().top},
 			{body.getGlobalBounds().width - 120.f, body.getGlobalBounds().height}
 		};
-
-		if (this->getGlobalBounds().top + this->getGlobalBounds().height >= 1000.f and fallDamage) {
-			this->setMoveDirection({ 0.f, 0.f });
-			this->setOneTimeTexFile("Dead", { 5, 1 });
-			this->setFormalTexFile("Dead", { 5, 1 });
-			this->stopAnimationAfterOneTimeIsDone();
-			this->lockEvents();
-			fallDamage = false;
-		}
 
 		if (std::abs(this->getCurrentMoveDir().y) > 0.f or this->_objectColliding == nullptr) 
 		{

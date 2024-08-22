@@ -185,10 +185,10 @@
     <ClCompile Include="Eventable.ixx" />
     <ClCompile Include="Functor.ixx" />
     <ClCompile Include="Globals.ixx" />
+    <ClCompile Include="Knight.ixx" />
     <ClCompile Include="Moveable.ixx" />
     <ClCompile Include="MTEngine.cpp" />
     <ClCompile Include="OC.ixx" />
-    <ClCompile Include="Player.ixx" />
     <ClCompile Include="Rectangle.ixx" />
     <ClCompile Include="Updateable.ixx" />
   </ItemGroup>
