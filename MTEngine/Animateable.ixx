@@ -156,5 +156,8 @@ public:
 	void stopAnimationAfterOneTimeIsDone() {
 		stopAnimatingAfterOT = true;
 	}
+	void setAnimationFramerate(sf::Int32 newFramerate = 10) {
+		framerate = newFramerate;
+	}
 
 };

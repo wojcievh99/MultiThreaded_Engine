@@ -18,22 +18,14 @@ int main()
 	bool init = engine.init({ 1500, 1200 }, "Killer Queen", false, 800);
 
 	auto r = engine.addObject<Rectangle>(
-		std::make_shared<Rectangle>(sf::Vector2f{ 0.f, 1000.f }, sf::Color(50, 180, 80), sf::Vector2f{1500.f, 200.f})
+		std::make_shared<Rectangle>(sf::Vector2f{ 200.f, 1000.f }, sf::Color(250, 250, 250), sf::Vector2f{500.f, 100.f})
 	);
 
 	auto p = engine.addObject<Knight>(std::make_shared<Knight>(
-		sf::Vector2f{200.f, 300.f}, sf::Vector2f{2.f, 2.f}
+		sf::Vector2f{300.f, 300.f}, sf::Vector2f{3.f, 3.f}
 	));
 
-	engine.addObject<Rectangle>(
-		std::make_shared<Rectangle>(sf::Vector2f{ 800.f, 700.f }, sf::Color(100, 100, 100), sf::Vector2f{ 500.f, 300.f })
-	);
-	engine.addObject<Rectangle>(
-		std::make_shared<Rectangle>(sf::Vector2f{ 1300.f, 500.f }, sf::Color(100, 100, 100), sf::Vector2f{ 800.f, 50.f })
-	);
-	engine.addObject<Rectangle>(
-		std::make_shared<Rectangle>(sf::Vector2f{ 2300.f, 300.f }, sf::Color(100, 100, 100), sf::Vector2f{ 500.f, 50.f })
-	);
+	
 	
 	if (init) engine.run();
 

@@ -72,14 +72,14 @@
     <ClCompile Include="Concepts.ixx">
       <Filter>Source Files\Engine\Other</Filter>
     </ClCompile>
-    <ClCompile Include="Player.ixx">
-      <Filter>Source Files\Engine\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Animateable.ixx">
       <Filter>Source Files\Engine\ObjectDerived</Filter>
     </ClCompile>
     <ClCompile Include="Rectangle.ixx">
       <Filter>Source Files\Engine\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Physicsable.ixx">
+      <Filter>Source Files\Engine\ObjectDerived</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

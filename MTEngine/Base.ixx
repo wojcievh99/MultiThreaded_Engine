@@ -41,7 +41,4 @@ public:
 		std::cout << "[ID: " << _object_id << "](-) \n";
 	}
 
-	virtual void resetToRender() {}
-	virtual sf::Vector2f getDimensions() { return { 0.f, 0.f }; }
-
 };

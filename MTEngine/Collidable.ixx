@@ -21,52 +21,18 @@ public:
 		}
 		return false;
 	};
-	virtual void afterCollision() {	}
+	virtual void whileCollision() { };
+	virtual void afterCollision() {	};
 
-	direc getVerticalDirectionOfCollidingObject() {
-		if (_objectColliding) {
-			Base* obB = dynamic_cast<Base*>(_objectColliding);
-			Base* thisB = dynamic_cast<Base*>(this);
+	virtual void while_No_Collision() { };
 
-			if (thisB->getPosition().y > obB->getPosition().y) return UP;
-			else if (thisB->getPosition().y < obB->getPosition().y) return DOWN;
-
-		}
-		return NONE;
-	}
-	direc getHorizontalDirectionOfCollidingObject() {
-		if (_objectColliding) {
-			Base* obB = dynamic_cast<Base*>(_objectColliding);
-			Base* thisB = dynamic_cast<Base*>(this);
-
-			if (thisB->getPosition().x < obB->getPosition().x) return RIGHT;
-			else if (thisB->getPosition().x > obB->getPosition().x) return LEFT;
-
-		}
-		return NONE;
-	}
-
-	bool isCollisionHorizontal() {
-		if (_objectColliding) {
-
-			if (this->getGlobalBounds().top < _objectColliding->getGlobalBounds().top
-				and this->getGlobalBounds().top + this->getGlobalBounds().height - 5.f > 
-				_objectColliding->getGlobalBounds().top) return true;
-
-		}
+	virtual bool isCollisionPossible(Collidable* ob) {
+		if (this->globalBounds.intersects(ob->globalBounds)) return true;
 		return false;
 	}
-
-	bool isCollisionFullLengthHorizontal() {
-		if (_objectColliding) {
-
-			if (this->getGlobalBounds().top > _objectColliding->getGlobalBounds().top
-				and this->getGlobalBounds().top + this->getGlobalBounds().height - 15.f <
-				_objectColliding->getGlobalBounds().top + _objectColliding->getGlobalBounds().height) return true;
-
-		}
-		return false;
-	}
+	// ^Saves some calculations - if two objects are far away from each other, then the 
+	// isInCollisionWith function (which by design uses more computing power) won't 
+	// be executed. Simple optimization.
 
 	bool putObjectColliding(Collidable* ob) {
 		if (ob == _objectColliding) return false;

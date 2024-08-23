@@ -33,8 +33,10 @@ export class Engine {
 	static void checkAndExecuteCollisionsInAllObjects() {
 		for (std::pair<uint64_t, Collidable*> e : oc._objectWithCollisions) {
 			for (std::pair<uint64_t, Collidable*> otherObject : oc._objectWithCollisions) {
-				if (e.first != otherObject.first) {
+				if (e.first != otherObject.first and e.second->isCollisionPossible(otherObject.second)
+					or otherObject.second->getLastObjectColliding() == e.second) { // <-- [last one - safety]
 					if (e.second->isInCollisionWith(otherObject.second)) {
+						e.second->whileCollision();
 						if (e.second->putObjectColliding(otherObject.second)) {
 							//std::cout << "#(" << e.first << " and " << otherObject.first << "): afterCollision processing...\n";
 							e.second->putLastObjectColliding(otherObject.second);
@@ -42,6 +44,7 @@ export class Engine {
 						}
 					}
 					else {
+						e.second->while_No_Collision();
 						if (e.second->getLastObjectColliding() == otherObject.second)
 							e.second->putObjectColliding(nullptr);
 						//std::cout << e.first << " and " << otherObject.first << ": no collision processing...\n";
