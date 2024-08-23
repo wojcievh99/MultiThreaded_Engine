@@ -18,6 +18,19 @@ export class Engine {
 			isWindowOpen = true;
 
 			while (isWindowOpen) {
+				if (viewLock) {
+					view.reset(sf::FloatRect(
+						oc._database[viewObjectData.first][viewObjectData.second]->getPosition().x,
+						oc._database[viewObjectData.first][viewObjectData.second]->getPosition().y,
+						window->getSize().x, window->getSize().y
+					));
+					view.setCenter(
+						oc._database[viewObjectData.first][viewObjectData.second]->getPosition().x,
+						oc._database[viewObjectData.first][viewObjectData.second]->getPosition().y
+					);
+					window->setView(view);
+				}
+
 				window->clear();
 
 				deleteMutex.lock();
@@ -33,26 +46,24 @@ export class Engine {
 	static void checkAndExecuteCollisionsInAllObjects() {
 		for (std::pair<uint64_t, Collidable*> e : oc._objectWithCollisions) {
 			for (std::pair<uint64_t, Collidable*> otherObject : oc._objectWithCollisions) {
-				if (e.first != otherObject.first and e.second->isCollisionPossible(otherObject.second)
-					or otherObject.second->getLastObjectColliding() == e.second) { // <-- [last one - safety]
-					if (e.second->isInCollisionWith(otherObject.second)) {
+				if (e.first != otherObject.first and e.second->isCollisionPossible(otherObject.second))
+				{ 
+					if (e.second->isInCollisionWith(otherObject.second)) 
+					{
 						e.second->whileCollision();
 						if (e.second->putObjectColliding(otherObject.second)) {
-							//std::cout << "#(" << e.first << " and " << otherObject.first << "): afterCollision processing...\n";
 							e.second->putLastObjectColliding(otherObject.second);
 							e.second->afterCollision();
 						}
 					}
-					else {
-						e.second->while_No_Collision();
+				}
+				if (!e.second->isCollisionPossible(otherObject.second) 
+					or !e.second->isInCollisionWith(otherObject.second)) 
+					{
+						e.second->whileNoCollision();
 						if (e.second->getLastObjectColliding() == otherObject.second)
 							e.second->putObjectColliding(nullptr);
-						//std::cout << e.first << " and " << otherObject.first << ": no collision processing...\n";
-						//std::cout << std::boolalpha << e.second->putObjectColliding(nullptr) << std::endl;
-
 					}
-				}
-				//else std::cout << "the same";
 			}
 		}
 	}
@@ -111,7 +122,8 @@ export class Engine {
 
 	void moveAllObjects() {
 		for (auto const& e : oc._objectMoves) {
-			Functor f = e.second; f();
+			Functor f = e.second.first; f();
+			f = e.second.second; f();
 		}
 	}
 
@@ -166,6 +178,15 @@ public:
 		isWindowOpen = true;
 		std::cout << "<- Engine Loaded ->\n";
 		return isWindowOpen;
+	}
+
+	bool lockViewOnObject(std::pair<std::string, uint64_t> _objectData) {
+		if (oc._database[_objectData.first][_objectData.second] != nullptr) {
+			viewObjectData = _objectData;
+			return viewLock = true;
+		}
+		else 
+			return false;
 	}
 
 	void run() {

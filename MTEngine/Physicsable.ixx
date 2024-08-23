@@ -15,6 +15,12 @@ public:
 	void addForce(sf::Vector2f newForce) {
 		forces.push_back(newForce);
 	}
+	bool addNotRepeatedForce(sf::Vector2f newForce) {
+		for (auto e : forces) 
+			if (e == newForce) return false;
+		forces.push_back(newForce);
+		return true;
+	}
 	bool removeForce(sf::Vector2f force) {
 		bool result = false;
 		for (size_t i = 0; i < forces.size(); i++) {

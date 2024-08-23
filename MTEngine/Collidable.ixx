@@ -1,9 +1,6 @@
 export module Collidable;
 
 import Globals;
-import Base;
-
-export enum direc { UP, DOWN, RIGHT, LEFT, NONE };
 
 export class Collidable {
 protected:
@@ -23,8 +20,7 @@ public:
 	};
 	virtual void whileCollision() { };
 	virtual void afterCollision() {	};
-
-	virtual void while_No_Collision() { };
+	virtual void whileNoCollision() { };
 
 	virtual bool isCollisionPossible(Collidable* ob) {
 		if (this->globalBounds.intersects(ob->globalBounds)) return true;

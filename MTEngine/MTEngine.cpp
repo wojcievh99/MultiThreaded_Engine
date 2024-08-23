@@ -4,8 +4,7 @@
 import std;
 import Engine;
 
-import Circle;
-import Knight;
+import Ball;
 import Rectangle;
 import Base;
 
@@ -15,18 +14,18 @@ int main()
 {
 
 	//						(size, windowName, resizable, framerate);
-	bool init = engine.init({ 1500, 1200 }, "Killer Queen", false, 800);
+	bool init = engine.init({ 1500, 1200 }, "Baller", false, 1000);
 
 	auto r = engine.addObject<Rectangle>(
-		std::make_shared<Rectangle>(sf::Vector2f{ 200.f, 1000.f }, sf::Color(250, 250, 250), sf::Vector2f{500.f, 100.f})
+		std::make_shared<Rectangle>(sf::Vector2f{ 200.f, 1000.f }, sf::Color(230, 230, 230), sf::Vector2f{500.f, 100.f})
 	);
 
-	auto p = engine.addObject<Knight>(std::make_shared<Knight>(
-		sf::Vector2f{300.f, 300.f}, sf::Vector2f{3.f, 3.f}
+	auto p = engine.addObject<Ball>(std::make_shared<Ball>(
+		sf::Vector2f{400.f, 400.f}, 50.f, 1.f
 	));
 
 	
-	
+	engine.lockViewOnObject(std::make_pair(".PEAVBall@@", 2));
 	if (init) engine.run();
 
 	return 0;

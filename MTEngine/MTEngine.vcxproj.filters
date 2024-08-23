@@ -81,5 +81,8 @@
     <ClCompile Include="Physicsable.ixx">
       <Filter>Source Files\Engine\ObjectDerived</Filter>
     </ClCompile>
+    <ClCompile Include="Ball.ixx">
+      <Filter>Source Files\Engine\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

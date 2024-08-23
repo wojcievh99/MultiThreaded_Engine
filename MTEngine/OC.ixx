@@ -13,7 +13,7 @@ import Animateable;
 export class OC {
 	std::map<std::string, std::unordered_map<uint64_t, std::shared_ptr<Base>>> _database;
 
-	std::list<std::pair<uint64_t, Functor>> _objectMoves;
+	std::list<std::pair<uint64_t, std::pair<Functor, Functor>>> _objectMoves; // accelerate, move
 	std::list<std::pair<uint64_t, Functor>> _objectDraws;
 	std::list<std::pair<uint64_t, Functor>> _objectUpdates;
 	std::list<std::pair<uint64_t, std::pair<Functor, Functor>>> _objectAnimations;
@@ -38,7 +38,7 @@ public:
 		_membership[r->getClassName()].insert(r->getID());
 
 		if (Moveable* x = dynamic_cast<Moveable*>(r.get())) {
-			_objectMoves.push_back({ r->getID(), Functor([x]() { x->moveObject(); }) });
+			_objectMoves.push_back({ r->getID(), std::make_pair(Functor([x]() { x->accelerateObject(); }), Functor([x]() { x->moveObject(); })) });
 		}
 		if (Drawable* x = dynamic_cast<Drawable*>(r.get())) {
 			_objectDraws.push_back({ r->getID(), Functor([x]() { x->drawObject(); }) });
