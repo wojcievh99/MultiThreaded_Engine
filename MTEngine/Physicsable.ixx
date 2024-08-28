@@ -58,15 +58,17 @@ public:
 	void clearReactionForces() {
 		reaction_forces.clear();
 	}
-	sf::Vector2f sigmaF() {
+	sf::Vector2f sigmaF(bool RF = false) {
 		sf::Vector2f result = sf::Vector2f{ 0.f, 0.f };
 		for (auto e : forces) {
 			result.x += e.x;
 			result.y += e.y;
 		}
-		for (auto e : reaction_forces) {
-			result.x += e.x;
-			result.y += e.y;
+		if (RF) {
+			for (auto e : reaction_forces) {
+				result.x += e.x;
+				result.y += e.y;
+			}
 		}
 		return result;
 	}

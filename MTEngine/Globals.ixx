@@ -13,6 +13,7 @@ export sf::Mutex deleteMutex;
 export bool isWindowOpen = false;
 
 export std::unique_ptr<sf::RenderWindow> window;
+export unsigned int framerate;
 export std::unique_ptr<sf::Event> event;
 
 export sf::View view; 

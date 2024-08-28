@@ -2,22 +2,17 @@ export module Collidable;
 
 import Globals;
 
-export enum direc {
-	UP, DOWN, LEFT, RIGHT,
-	UP_or_DOWN, LEFT_or_RIGHT,
-	NULL_DIREC
-};
-
 export class Collidable {
 protected:
 	sf::FloatRect globalBounds;
 
-	direc D;
+	float alpha;
 
 	Collidable* _objectColliding;
 	Collidable* _lastObjectColliding;
 public:
-	Collidable() : globalBounds({ {0.f, 0.f}, {0.f, 0.f} }), D(NULL_DIREC), _objectColliding(nullptr), _lastObjectColliding(nullptr) {}
+	Collidable() : globalBounds({ {0.f, 0.f}, {0.f, 0.f} }), alpha(1.5708f) /*<- 90deg*/, 
+		_objectColliding(nullptr), _lastObjectColliding(nullptr) {}
 	~Collidable() { delete _objectColliding, _lastObjectColliding; }
 
 	virtual bool isInCollisionWith(Collidable* ob) {
@@ -38,12 +33,12 @@ public:
 	// isInCollisionWith function (which by design uses more computing power) won't 
 	// be executed. Simple optimization.
 
-	void setCollisionDirection(direc x) {
-		D = x;
+	virtual void calculateCollisionAngle() { };
+	void setCollisionAngle(float newAlpha) {
+		alpha = newAlpha;
 	}
-
-	direc getCollisionDirection() {
-		return D;
+	float getCollisionAngle() {
+		return alpha;
 	}
 
 	bool putObjectColliding(Collidable* ob) {
@@ -51,7 +46,6 @@ public:
 		//delete _objectColliding;
 		_objectColliding = ob; return true;
 	}
-
 	bool putLastObjectColliding(Collidable* ob) {
 		if (ob == _lastObjectColliding) return false;
 		//delete _objectColliding;
@@ -61,7 +55,6 @@ public:
 	Collidable* getLastObjectColliding() {
 		return _lastObjectColliding;
 	}
-
 	Collidable* getObjectColliding() {
 		return _objectColliding;
 	}

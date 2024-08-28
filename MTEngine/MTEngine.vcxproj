@@ -178,7 +178,6 @@
     <ClCompile Include="Animateable.ixx" />
     <ClCompile Include="Ball.ixx" />
     <ClCompile Include="Base.ixx" />
-    <ClCompile Include="Circle.ixx" />
     <ClCompile Include="Collidable.ixx" />
     <ClCompile Include="Concepts.ixx" />
     <ClCompile Include="Drawable.ixx" />

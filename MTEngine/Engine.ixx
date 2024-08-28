@@ -53,6 +53,7 @@ export class Engine {
 						e.second->whileCollision();
 						if (e.second->putObjectColliding(otherObject.second)) {
 							e.second->putLastObjectColliding(otherObject.second);
+							e.second->calculateCollisionAngle();
 							e.second->afterCollision();
 						}
 					}
@@ -75,7 +76,7 @@ export class Engine {
 
 			while (isWindowOpen) {
 				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
-				if (elapsedTime - prevTime > (100 / 18)) {
+				if (elapsedTime - prevTime > 1000 / (framerate * 4)) {
 
 					prevTime = elapsedTime;
 					checkAndExecuteCollisionsInAllObjects();
@@ -94,7 +95,7 @@ export class Engine {
 			}
 			for (std::pair<uint64_t, Eventable*> e : oc._objectsWithEventsAssociatedWithFunctions) {
 				//std::cout << e.second << " " << e.second->_keyAssociation.size() << std::endl;
-				if (!e.second->isLocked()) {
+				if (!e.second->events_isLocked()) {
 					for (auto const& [key, func] : e.second->_keyAssociation)
 						if (event->type == sf::Event::KeyPressed and event->key.code == key)
 						{
@@ -164,11 +165,11 @@ public:
 		return std::weak_ptr<T>(std::dynamic_pointer_cast<T>(std::move(r)));
 	}
 
-	bool init(std::pair<int, int> _windowSize, std::string _windowName, bool _resizable, int _framerate) {
+	bool init(std::pair<int, int> _windowSize, std::string _windowName, bool _resizable, unsigned int _framerate = 60) {
 		window = std::make_unique<sf::RenderWindow>(
 			sf::VideoMode(_windowSize.first, _windowSize.second),
 			_windowName, _resizable ? (sf::Style::Default) : (sf::Style::Close));//| sf::Style::Fullscreen);
-		window->setFramerateLimit(_framerate);
+		window->setFramerateLimit(_framerate); framerate = _framerate;
 		window->setVerticalSyncEnabled(true);
 		window->setKeyRepeatEnabled(false);
 		window->setPosition({ 0,0 });
@@ -205,7 +206,7 @@ public:
 
 			while (window->isOpen()) {
 				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
-				if (elapsedTime - prevTime > 100 / 18) {
+				if (elapsedTime - prevTime > 1000 / (framerate * 2)) {
 					prevTime = elapsedTime;
 
 					checkAndExecuteEventsInAllObjects();

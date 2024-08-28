@@ -54,9 +54,6 @@
     <ClCompile Include="Globals.ixx">
       <Filter>Source Files\Engine\Globals</Filter>
     </ClCompile>
-    <ClCompile Include="Circle.ixx">
-      <Filter>Source Files\Engine\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.ixx">
       <Filter>Source Files\Engine\MainEngine</Filter>
     </ClCompile>

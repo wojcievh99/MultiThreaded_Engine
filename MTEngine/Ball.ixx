@@ -26,49 +26,42 @@ public:
 		body.setRadius(_radius);
 		body.setOrigin(sf::Vector2f{ _radius, _radius });
 
-		this->addNotRepeatedForce(sf::Vector2f{ 0.f, 0.05f * this->getObjectMass() });
+		this->addNotRepeatedForce(sf::Vector2f{ 0.f, 0.005f * this->getObjectMass() });
+		this->lockEvents();
 
 		this->globalBounds = body.getGlobalBounds();
 
 		this->addKeyAssociation(sf::Keyboard::Right, Functor(
 			[this]() {
-				if (!this->isLocked()) 
-					this->prevTime = globalClock.getElapsedTime().asMilliseconds();
+				this->prevTime = globalClock.getElapsedTime().asMilliseconds();
 			}
 		));
 
 		this->addReleaseKeyAssociation(sf::Keyboard::Right, Functor(
 			[this]() {
-				if (!this->isLocked()) {
-					sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds() - this->prevTime;
-					if (this->getCurrentAccDir().x <= 0.f)
-						this->setAccelerationDirection(sf::Vector2f{ 0.01f * elapsedTime, this->getCurrentAccDir().y });
-				}
+				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds() - this->prevTime;
+				if (this->getCurrentAccDir().x <= 0.f)
+					this->setAccelerationDirection(sf::Vector2f{ 0.01f * elapsedTime, this->getCurrentAccDir().y });
 			}
 		));
 		this->addKeyAssociation(sf::Keyboard::Left, Functor(
 			[this]() {
-				if (!this->isLocked()) 
-					this->prevTime = globalClock.getElapsedTime().asMilliseconds();
+				this->prevTime = globalClock.getElapsedTime().asMilliseconds();
 			}
 		));
 
 		this->addReleaseKeyAssociation(sf::Keyboard::Left, Functor(
 			[this]() {
-				if (!this->isLocked()) {
-					sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds() - this->prevTime;
-					if (this->getCurrentAccDir().x <= 0.f)
-						this->setAccelerationDirection(sf::Vector2f{ -0.01f * elapsedTime, this->getCurrentAccDir().y });
-				}
+				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds() - this->prevTime;
+				if (this->getCurrentAccDir().x <= 0.f)
+					this->setAccelerationDirection(sf::Vector2f{ -0.01f * elapsedTime, this->getCurrentAccDir().y });
+				
 			}
 		));
 
 		this->addKeyAssociation(sf::Keyboard::Space, Functor(
 			[this]() {
-				if (!this->isLocked()) {
-					this->setMoveDirection(sf::Vector2f{ this->getCurrentMoveDir().x, -5.f });
-				}
-				
+				this->setMoveDirection(sf::Vector2f{ this->getCurrentMoveDir().x, -2.f });
 			}
 		));
 
@@ -85,15 +78,14 @@ public:
 	void updateObject() {
 		this->object_position = body.getPosition();
 		this->globalBounds = sf::FloatRect(body.getGlobalBounds());
-		this->setAccelerationDirection(this->sigmaF() / this->getObjectMass());
-
+		this->setAccelerationDirection(this->sigmaF(true) / this->getObjectMass());
 	}
 
 	bool isInCollisionWith(Collidable* ob) {
 		Base* ob_B = dynamic_cast<Base*>(ob);
 
-		float dx = this->getPosition().x - ob_B->getPosition().x, 
-			  dy = this->getPosition().y - ob_B->getPosition().y;
+		float dx = abs(this->getPosition().x - ob_B->getPosition().x), 
+			  dy = abs(this->getPosition().y - ob_B->getPosition().y);
 
 		float diagonal = sqrt(
 			pow(dx, 2) + pow(dy, 2)
@@ -104,6 +96,8 @@ public:
 		if (dx >= dy) dx1 = (dist / dx) * diagonal; // scale times diagonal (since [T]abc ~ [T]def)
 		else dx1 = (dist / dy) * diagonal;
 
+		this->setCollisionAngle(atanf(dy / dx));
+
 		if (diagonal <= (dx1 + this->getSize().x)) // dx1 + radius
 			return true;
 
@@ -111,15 +105,26 @@ public:
 	};
 
 	void afterCollision() {
-		this->unlockEvents();
-		this->addNotRepeatedForce(sf::Vector2f{ 0.f, -0.05f * this->getObjectMass() }, true); // bool -> reaction-force?
-		this->setMoveDirection(sf::Vector2f{ this->getCurrentMoveDir().x, 0.f });
-		this->setAccelerationDirection(this->sigmaF() / this->getObjectMass());
+		this->unlockEvents(); 
+
+		this->addNotRepeatedForce(
+			sf::Vector2f{ 
+				round(cos(this->getCollisionAngle())) * -sigmaF().x,
+				round(sin(this->getCollisionAngle())) * -sigmaF().y 
+			},
+			true // bool -> reaction-force?
+		);
+
+		if (round(cos(this->getCollisionAngle())) != 0.f)
+			this->setMoveDirection(sf::Vector2f{ 0.f, this->getCurrentMoveDir().y });
+		else 
+			this->setMoveDirection(sf::Vector2f{ this->getCurrentMoveDir().x, 0.f });
+
+		this->setAccelerationDirection(this->sigmaF(true) / this->getObjectMass());
 	}
 
 	void afterCollisionIsResolved() {
-		this->lockEvents();
-		this->addNotRepeatedForce(sf::Vector2f{ 0.f, 0.05f * this->getObjectMass() });
+		this->lockEvents(); 
 		this->clearReactionForces();
 	}
 

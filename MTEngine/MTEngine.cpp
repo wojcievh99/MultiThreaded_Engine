@@ -6,20 +6,16 @@ import Engine;
 
 import Ball;
 import Square;
-import Base;
-
-import Globals;
 
 int main()
 {
 
 	//						(size, windowName, resizable, framerate);
-	bool init = engine.init({ 1500, 1200 }, "Baller", false, 1000);
+	bool init = engine.init({ 1500, 1200 }, "Baller", false, 60);
 
 	auto p = engine.addObject<Ball>(std::make_shared<Ball>(
 		sf::Vector2f{ 400.f, 400.f }, 50.f, 1.f
 	));
-
 	
 	for (int i = 1; i < 100; i++) 
 		auto r = engine.addObject<Square>(

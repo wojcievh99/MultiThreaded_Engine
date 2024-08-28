@@ -42,6 +42,6 @@ public:
 	void lockEvents() { stopCheckingEvents = true; }
 	void unlockEvents() { stopCheckingEvents = false; }
 	
-	bool isLocked() { return stopCheckingEvents; }
+	bool events_isLocked() { return stopCheckingEvents; }
 
 };
