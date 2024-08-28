@@ -5,7 +5,7 @@ import std;
 import Engine;
 
 import Ball;
-import Rectangle;
+import Square;
 import Base;
 
 import Globals;
@@ -16,16 +16,32 @@ int main()
 	//						(size, windowName, resizable, framerate);
 	bool init = engine.init({ 1500, 1200 }, "Baller", false, 1000);
 
-	auto r = engine.addObject<Rectangle>(
-		std::make_shared<Rectangle>(sf::Vector2f{ 200.f, 1000.f }, sf::Color(230, 230, 230), sf::Vector2f{500.f, 100.f})
-	);
-
 	auto p = engine.addObject<Ball>(std::make_shared<Ball>(
-		sf::Vector2f{400.f, 400.f}, 50.f, 1.f
+		sf::Vector2f{ 400.f, 400.f }, 50.f, 1.f
 	));
 
 	
-	engine.lockViewOnObject(std::make_pair(".PEAVBall@@", 2));
+	for (int i = 1; i < 100; i++) 
+		auto r = engine.addObject<Square>(
+			std::make_shared<Square>(sf::Vector2f{ i*10.f, 1000.f }, sf::Color(230, 230, 230), 10.f)
+		);
+
+	for (int i = 1; i < 20; i++)
+		auto r = engine.addObject<Square>(
+			std::make_shared<Square>(sf::Vector2f{ 1200.f, 10.f * i + 850.f }, sf::Color(230, 230, 230), 10.f)
+		);
+
+	for (int i = 1; i < 100; i++)
+		auto r = engine.addObject<Square>(
+			std::make_shared<Square>(sf::Vector2f{ i * 10.f + 1400.f, 1000.f }, sf::Color(230, 230, 230), 10.f)
+		);
+
+	for (int i = 1; i < 50; i++)
+		auto r = engine.addObject<Square>(
+			std::make_shared<Square>(sf::Vector2f{ 2500.f, 10.f * i + 700.f }, sf::Color(230, 230, 230), 10.f)
+		);
+	
+	engine.lockViewOnObject(std::make_pair(".PEAVBall@@", 1));
 	if (init) engine.run();
 
 	return 0;

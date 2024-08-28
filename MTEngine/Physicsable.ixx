@@ -4,51 +4,67 @@ import Globals;
 
 export class Physicsable {
 	std::vector<sf::Vector2f> forces;
+	std::vector<sf::Vector2f> reaction_forces;
 	float _object_mass;
 public:
 	Physicsable(float _mass = 1.f, std::vector<sf::Vector2f> _forces = { sf::Vector2f{0.f, 0.f} })
-		: _object_mass(_mass), forces(_forces)
+		: _object_mass(_mass), forces(_forces), reaction_forces({ sf::Vector2f{ 0.f, 0.f } })
 	{
 		//forces.push_back(sf::Vector2f{ 0.f, 0.98f * _object_mass });
 	}
 
-	void addForce(sf::Vector2f newForce) {
-		forces.push_back(newForce);
+	void addForce(sf::Vector2f newForce, bool RF = false) {
+		if (RF) reaction_forces.push_back(newForce);
+		else forces.push_back(newForce);
 	}
-	bool addNotRepeatedForce(sf::Vector2f newForce) {
-		for (auto e : forces) 
+	bool addNotRepeatedForce(sf::Vector2f newForce, bool RF = false) {
+		for (auto e : RF ? reaction_forces : forces) 
 			if (e == newForce) return false;
-		forces.push_back(newForce);
+
+		if (RF) reaction_forces.push_back(newForce);
+		else forces.push_back(newForce);
+
 		return true;
 	}
-	bool removeForce(sf::Vector2f force) {
+	bool removeForce(sf::Vector2f force, bool RF = false) {
 		bool result = false;
-		for (size_t i = 0; i < forces.size(); i++) {
-			if (forces[i] == force) {
-				forces.erase(forces.begin() + i);
-				result = true;
+		if (RF) 
+			for (size_t i = 0; i < reaction_forces.size(); i++) {
+				if (reaction_forces[i] == force) {
+					reaction_forces.erase(reaction_forces.begin() + i);
+					result = true;
+				}
 			}
-		}
+		else 
+			for (size_t i = 0; i < forces.size(); i++) {
+				if (forces[i] == force) {
+					forces.erase(forces.begin() + i);
+					result = true;
+				}
+			}
 		return result;
 	}
-	bool removeForceBySubscript(size_t subscript) {
-		if (forces.size() - 1 >= subscript)
-			forces.erase(forces.begin() + subscript);
-		else return false;
-		return true;
+	void removeLastForce() {
+		if (forces.size() > 0) 
+			forces.pop_back();
 	}
-	bool removeForceBySubscript(std::vector<size_t> subscripts) {
-		for (auto subscript : subscripts) {
-			if (forces.size() - 1 >= subscript)
-			{
-				forces.erase(forces.begin() + subscript);
-			}
-		}
-		return true;
+	void removeLastReactionForce() {
+		if (reaction_forces.size() > 0) 
+			reaction_forces.pop_back();
+	}
+	void clearForces() {
+		forces.clear();
+	}
+	void clearReactionForces() {
+		reaction_forces.clear();
 	}
 	sf::Vector2f sigmaF() {
 		sf::Vector2f result = sf::Vector2f{ 0.f, 0.f };
 		for (auto e : forces) {
+			result.x += e.x;
+			result.y += e.y;
+		}
+		for (auto e : reaction_forces) {
 			result.x += e.x;
 			result.y += e.y;
 		}
@@ -57,10 +73,8 @@ public:
 	size_t getForcesSize() {
 		return forces.size();
 	}
-	sf::Vector2f getForceBySubscript(size_t subscript) {
-		if (forces.size() - 1 > subscript)
-			return forces[subscript];
-		return { 0.f, 0.f };
+	size_t getReactionForcesSize() {
+		return reaction_forces.size();
 	}
 
 	float setObjectMass(float newMass) {

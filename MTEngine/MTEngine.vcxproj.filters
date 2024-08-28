@@ -75,7 +75,7 @@
     <ClCompile Include="Animateable.ixx">
       <Filter>Source Files\Engine\ObjectDerived</Filter>
     </ClCompile>
-    <ClCompile Include="Rectangle.ixx">
+    <ClCompile Include="Square.ixx">
       <Filter>Source Files\Engine\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Physicsable.ixx">

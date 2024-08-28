@@ -1,4 +1,4 @@
-export module Rectangle;
+export module Square;
 
 import Globals;
 import Base;
@@ -6,12 +6,12 @@ import Drawable;
 import Collidable;
 import Updateable;
 
-export class Rectangle : public Base, public Drawable, public Collidable, public Updateable {
+export class Square : public Base, public Drawable, public Collidable, public Updateable {
 	sf::RectangleShape body;
 public:
-	Rectangle(sf::Vector2f _pos, sf::Color color, sf::Vector2f _size) : Base(typeid(this).raw_name(), _pos) {
+	Square(sf::Vector2f _pos, sf::Color color, float _size) : Base(typeid(this).raw_name(), _pos) {
 		body.setPosition(this->object_position);
-		body.setSize(_size);
+		body.setSize(sf::Vector2f{ _size, _size });
 		body.setFillColor(color);
 
 		this->globalBounds = body.getGlobalBounds();
@@ -24,6 +24,10 @@ public:
 
 	void updateObject() {
 		this->globalBounds = body.getGlobalBounds();
+	}
+
+	sf::Vector2f getSize() {
+		return body.getSize();
 	}
 
 };

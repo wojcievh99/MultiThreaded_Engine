@@ -190,7 +190,7 @@
     <ClCompile Include="MTEngine.cpp" />
     <ClCompile Include="OC.ixx" />
     <ClCompile Include="Physicsable.ixx" />
-    <ClCompile Include="Rectangle.ixx" />
+    <ClCompile Include="Square.ixx" />
     <ClCompile Include="Updateable.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

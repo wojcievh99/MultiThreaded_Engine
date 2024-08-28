@@ -2,14 +2,22 @@ export module Collidable;
 
 import Globals;
 
+export enum direc {
+	UP, DOWN, LEFT, RIGHT,
+	UP_or_DOWN, LEFT_or_RIGHT,
+	NULL_DIREC
+};
+
 export class Collidable {
 protected:
 	sf::FloatRect globalBounds;
 
+	direc D;
+
 	Collidable* _objectColliding;
 	Collidable* _lastObjectColliding;
 public:
-	Collidable() : globalBounds({ {0.f, 0.f}, {0.f, 0.f} }), _objectColliding(nullptr), _lastObjectColliding(nullptr) {}
+	Collidable() : globalBounds({ {0.f, 0.f}, {0.f, 0.f} }), D(NULL_DIREC), _objectColliding(nullptr), _lastObjectColliding(nullptr) {}
 	~Collidable() { delete _objectColliding, _lastObjectColliding; }
 
 	virtual bool isInCollisionWith(Collidable* ob) {
@@ -20,7 +28,7 @@ public:
 	};
 	virtual void whileCollision() { };
 	virtual void afterCollision() {	};
-	virtual void whileNoCollision() { };
+	virtual void afterCollisionIsResolved() { };
 
 	virtual bool isCollisionPossible(Collidable* ob) {
 		if (this->globalBounds.intersects(ob->globalBounds)) return true;
@@ -29,6 +37,14 @@ public:
 	// ^Saves some calculations - if two objects are far away from each other, then the 
 	// isInCollisionWith function (which by design uses more computing power) won't 
 	// be executed. Simple optimization.
+
+	void setCollisionDirection(direc x) {
+		D = x;
+	}
+
+	direc getCollisionDirection() {
+		return D;
+	}
 
 	bool putObjectColliding(Collidable* ob) {
 		if (ob == _objectColliding) return false;
