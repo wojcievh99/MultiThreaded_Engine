@@ -51,9 +51,9 @@ public:
 		_body.move(this->getCurrentMoveDir());
 	}
 
-	bool isInCollisionWith(Collidable* ob) {
-		sf::Vector2f obPosition = dynamic_cast<Base*>(ob)->getCurrentPosition();
-		float obRadius = dynamic_cast<Circle*>(ob)->getRadius();
+	bool isInCollisionWith(std::shared_ptr<Collidable> ob) {
+		sf::Vector2f obPosition = dynamic_cast<Base*>(ob.get())->getCurrentPosition();
+		float obRadius = dynamic_cast<Circle*>(ob.get())->getRadius();
 
 		float diagonal =
 			sqrt(
@@ -69,7 +69,7 @@ public:
 	};
 
 	void afterCollision() {
-		if (Circle* other = dynamic_cast<Circle*>(_objectColliding)) {
+		if (Circle* other = dynamic_cast<Circle*>(_objectColliding.lock().get())) {
 			float tanAlpha = ((this->getCurrentPosition().x + this->_radius) - (other->getCurrentPosition().x + other->_radius))
 						   / ((this->getCurrentPosition().y + this->_radius) - (other->getCurrentPosition().y + other->_radius));
 			float alphaRadians = std::abs(std::atanf(tanAlpha));

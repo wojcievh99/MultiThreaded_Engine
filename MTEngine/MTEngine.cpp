@@ -4,7 +4,6 @@
 import std;
 import Engine;
 
-import Circle;
 import Player;
 import Rectangle;
 

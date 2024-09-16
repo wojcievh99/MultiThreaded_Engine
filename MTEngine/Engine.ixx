@@ -31,8 +31,8 @@ export class Engine {
 	}
 
 	static void checkAndExecuteCollisionsInAllObjects() {
-		for (std::pair<uint64_t, Collidable*> e : oc._objectWithCollisions) {
-			for (std::pair<uint64_t, Collidable*> otherObject : oc._objectWithCollisions) {
+		for (std::pair<uint64_t, std::shared_ptr<Collidable>> e : oc._objectWithCollisions) {
+			for (std::pair<uint64_t, std::shared_ptr<Collidable>> otherObject : oc._objectWithCollisions) {
 				if (e.first != otherObject.first) {
 					if (e.second->isInCollisionWith(otherObject.second)) {
 						if (e.second->putObjectColliding(otherObject.second)) {
@@ -42,7 +42,7 @@ export class Engine {
 						}
 					}
 					else {
-						if (e.second->getLastObjectColliding() == otherObject.second)
+						if (e.second->getLastObjectColliding().lock() == otherObject.second)
 							e.second->putObjectColliding(nullptr);
 						//std::cout << e.first << " and " << otherObject.first << ": no collision processing...\n";
 						//std::cout << std::boolalpha << e.second->putObjectColliding(nullptr) << std::endl;
@@ -76,7 +76,7 @@ export class Engine {
 				isWindowOpen = false;
 				break;
 			}
-			for (std::pair<uint64_t, Eventable*> e : oc._objectsWithEventsAssociatedWithFunctions) {
+			for (std::pair<uint64_t, std::shared_ptr<Eventable>> e : oc._objectsWithEventsAssociatedWithFunctions) {
 				//std::cout << e.second << " " << e.second->_keyAssociation.size() << std::endl;
 				if (!e.second->isLocked()) {
 					for (auto const& [key, func] : e.second->_keyAssociation)

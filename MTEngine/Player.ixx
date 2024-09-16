@@ -6,7 +6,6 @@ import Base;
 import Drawable;
 import Moveable;
 import Eventable;
-import Collidable;
 import Updateable;
 import Animateable;
 

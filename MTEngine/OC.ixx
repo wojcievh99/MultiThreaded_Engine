@@ -17,8 +17,8 @@ export class OC {
 	std::list<std::pair<uint64_t, Functor>> _objectDraws;
 	std::list<std::pair<uint64_t, Functor>> _objectUpdates;
 	std::list<std::pair<uint64_t, std::pair<Functor, Functor>>> _objectAnimations;
-	std::list<std::pair<uint64_t, Collidable*>> _objectWithCollisions;
-	std::list<std::pair<uint64_t, Eventable*>> _objectsWithEventsAssociatedWithFunctions;
+	std::list<std::pair<uint64_t, std::shared_ptr<Collidable>>> _objectWithCollisions;
+	std::list<std::pair<uint64_t, std::shared_ptr<Eventable>>> _objectsWithEventsAssociatedWithFunctions;
 
 	std::map<std::string, std::set<uint64_t>> _membership;
 public:
@@ -37,22 +37,22 @@ public:
 		_database[r->getClassName()][r->getID()] = r;
 		_membership[r->getClassName()].insert(r->getID());
 
-		if (Moveable* x = dynamic_cast<Moveable*>(r.get())) {
+		if (std::shared_ptr<Moveable> x = std::dynamic_pointer_cast<Moveable>(r)) {
 			_objectMoves.push_back({ r->getID(), Functor([x]() { x->moveObject(); }) });
 		}
-		if (Drawable* x = dynamic_cast<Drawable*>(r.get())) {
+		if (std::shared_ptr<Drawable> x = std::dynamic_pointer_cast<Drawable>(r)) {
 			_objectDraws.push_back({ r->getID(), Functor([x]() { x->drawObject(); }) });
 		}
-		if (Updateable* x = dynamic_cast<Updateable*>(r.get())) {
+		if (std::shared_ptr<Updateable> x = std::dynamic_pointer_cast<Updateable>(r)) {
 			_objectUpdates.push_back({ r->getID(), Functor([x]() { x->updateObject(); }) });
 		}
-		if (Animateable* x = dynamic_cast<Animateable*>(r.get())) {
+		if (std::shared_ptr<Animateable> x = std::dynamic_pointer_cast<Animateable>(r)) {
 			_objectAnimations.push_back({ r->getID(), {Functor([x]() { x->animateObject(); }),  Functor([x]() { x->updateAnimation(); })} });
 		}
-		if (Eventable* x = dynamic_cast<Eventable*>(r.get())) {
+		if (std::shared_ptr<Eventable> x = std::dynamic_pointer_cast<Eventable>(r)) {
 			_objectsWithEventsAssociatedWithFunctions.push_back({ r->getID(), x });
 		}
-		if (Collidable* x = dynamic_cast<Collidable*>(r.get())) {
+		if (std::shared_ptr<Collidable> x = std::dynamic_pointer_cast<Collidable>(r)) {
 			_objectWithCollisions.push_back({r->getID(), x});
 		}
 		

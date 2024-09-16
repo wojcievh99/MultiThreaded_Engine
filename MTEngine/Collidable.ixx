@@ -1,32 +1,30 @@
 export module Collidable;
 
 import Globals;
-import Base;
 
 export class Collidable {
 protected:
-	Collidable* _objectColliding;
-	Collidable* _lastObjectColliding;
+	std::weak_ptr<Collidable> _objectColliding;
+	std::weak_ptr<Collidable> _lastObjectColliding;
 public:
-	Collidable() : _objectColliding(nullptr), _lastObjectColliding(nullptr) {}
-	~Collidable() { delete _objectColliding, _lastObjectColliding; }
+	Collidable() {}
 
-	virtual bool isInCollisionWith(Collidable* ob) = 0;
+	virtual bool isInCollisionWith(std::shared_ptr<Collidable> ob) = 0;
 	virtual void afterCollision() = 0;
 
-	bool putObjectColliding(Collidable* ob) {
-		if (ob == _objectColliding) return false;
+	bool putObjectColliding(std::shared_ptr<Collidable> ob) {
+		if (ob == _objectColliding.lock()) return false;
 		//delete _objectColliding;
 		_objectColliding = ob; return true;
 	}
 
-	bool putLastObjectColliding(Collidable* ob) {
-		if (ob == _lastObjectColliding) return false;
+	bool putLastObjectColliding(std::shared_ptr<Collidable> ob) {
+		if (ob == _lastObjectColliding.lock()) return false;
 		//delete _objectColliding;
 		_lastObjectColliding = ob; return true;
 	}
 
-	Collidable* getLastObjectColliding() {
+	std::weak_ptr<Collidable> getLastObjectColliding() {
 		return _lastObjectColliding;
 	}
 };
