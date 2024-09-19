@@ -11,6 +11,7 @@ import Collidable;
 import Animateable;
 
 export class OC {
+
 	std::map<std::string, std::unordered_map<uint64_t, std::shared_ptr<Base>>> _database;
 
 	std::list<std::pair<uint64_t, Functor>> _objectMoves;
@@ -21,6 +22,7 @@ export class OC {
 	std::list<std::pair<uint64_t, std::shared_ptr<Eventable>>> _objectsWithEventsAssociatedWithFunctions;
 
 	std::map<std::string, std::set<uint64_t>> _membership;
+
 public:
 
 	OC() { std::cout << "<- ObjectContainer Running ->\n"; }
@@ -34,6 +36,7 @@ public:
 	}
 
 	void insertObject(std::shared_ptr<Base>& r) {
+
 		_database[r->getClassName()][r->getID()] = r;
 		_membership[r->getClassName()].insert(r->getID());
 
