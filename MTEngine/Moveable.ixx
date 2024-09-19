@@ -3,13 +3,13 @@ export module Moveable;
 import Globals;
 
 export class Moveable {
-	sf::Vector2f _moveDirection;
+	sf::Vector2f __moveDirection;
 public:
-	Moveable (sf::Vector2f _newMoveDir = sf::Vector2f{0.f, 0.f}) : _moveDirection(_newMoveDir) {}
+	Moveable (sf::Vector2f _newMoveDir = sf::Vector2f{0.f, 0.f}) : __moveDirection(_newMoveDir) {}
 
-	void setMoveDirection(sf::Vector2f _newMoveDir) { _moveDirection = _newMoveDir; }
+	void setMoveDirection(sf::Vector2f _newMoveDir) { __moveDirection = _newMoveDir; }
 
 	virtual void moveObject() = 0;
 
-	sf::Vector2f getCurrentMoveDir() { return _moveDirection; }
+	sf::Vector2f getMoveDir() { return __moveDirection; }
 };

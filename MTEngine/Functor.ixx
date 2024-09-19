@@ -3,12 +3,12 @@ export module Functor;
 import std;
 
 export class Functor {
-	std::function<void()> _body;
+	std::function<void()> __body;
 public:
 	Functor() {}
-	Functor(std::function<void()>&& f) : _body(f) {}
+	Functor(std::function<void()>&& f) : __body(f) {}
 	
 	void operator()() {
-		return _body();
+		return __body();
 	}
 };

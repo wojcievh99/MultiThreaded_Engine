@@ -54,9 +54,6 @@
     <ClCompile Include="Globals.ixx">
       <Filter>Source Files\Engine\Globals</Filter>
     </ClCompile>
-    <ClCompile Include="Circle.ixx">
-      <Filter>Source Files\Engine\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.ixx">
       <Filter>Source Files\Engine\MainEngine</Filter>
     </ClCompile>
@@ -72,14 +69,13 @@
     <ClCompile Include="Concepts.ixx">
       <Filter>Source Files\Engine\Other</Filter>
     </ClCompile>
-    <ClCompile Include="Player.ixx">
-      <Filter>Source Files\Engine\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Animateable.ixx">
       <Filter>Source Files\Engine\ObjectDerived</Filter>
     </ClCompile>
-    <ClCompile Include="Rectangle.ixx">
-      <Filter>Source Files\Engine\Objects</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TextFile.md">
+      <Filter>Source Files\Engine\Other</Filter>
+    </None>
   </ItemGroup>
 </Project>

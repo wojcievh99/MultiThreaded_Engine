@@ -6,7 +6,6 @@ import OC;
 export class Engine {
 
 	static void drawAllObjects() {
-		window->setActive(false);
 		for (auto const& e : oc._objectDraws) {
 			Functor f = e.second; f();
 		}
@@ -33,23 +32,20 @@ export class Engine {
 	static void checkAndExecuteCollisionsInAllObjects() {
 		for (std::pair<uint64_t, std::shared_ptr<Collidable>> e : oc._objectWithCollisions) {
 			for (std::pair<uint64_t, std::shared_ptr<Collidable>> otherObject : oc._objectWithCollisions) {
-				if (e.first != otherObject.first) {
+				if (e.first != otherObject.first and e.second->isCollisionPossible(otherObject.second)) {
 					if (e.second->isInCollisionWith(otherObject.second)) {
 						if (e.second->putObjectColliding(otherObject.second)) {
-							//std::cout << "#(" << e.first << " and " << otherObject.first << "): afterCollision processing...\n";
+
 							e.second->putLastObjectColliding(otherObject.second);
 							e.second->afterCollision();
+
 						}
 					}
 					else {
 						if (e.second->getLastObjectColliding().lock() == otherObject.second)
 							e.second->putObjectColliding(nullptr);
-						//std::cout << e.first << " and " << otherObject.first << ": no collision processing...\n";
-						//std::cout << std::boolalpha << e.second->putObjectColliding(nullptr) << std::endl;
-
 					}
 				}
-				//else std::cout << "the same";
 			}
 		}
 	}
@@ -65,6 +61,7 @@ export class Engine {
 
 					prevTime = elapsedTime;
 					checkAndExecuteCollisionsInAllObjects();
+
 				}
 			}
 		}
@@ -73,12 +70,14 @@ export class Engine {
 	void checkAndExecuteEventsInAllObjects() {
 		while (window->pollEvent(*event)) {
 			if (event->type == sf::Event::Closed) {
+
 				isWindowOpen = false;
 				break;
+
 			}
 			for (std::pair<uint64_t, std::shared_ptr<Eventable>> e : oc._objectsWithEventsAssociatedWithFunctions) {
-				//std::cout << e.second << " " << e.second->_keyAssociation.size() << std::endl;
 				if (!e.second->isLocked()) {
+
 					for (auto const& [key, func] : e.second->_keyAssociation)
 						if (event->type == sf::Event::KeyPressed and event->key.code == key)
 						{
@@ -99,6 +98,7 @@ export class Engine {
 						{
 							Functor f = func; f();
 						}
+
 				}
 			}
 		}
@@ -123,14 +123,15 @@ export class Engine {
 		}
 	}
 
-	void deleteAllObjects() { // not all obviously
+	void deleteAllObjects() { 
 		for (auto const& [className, element] : oc._database) {
 			for (auto const& [id, object] : element) {
 				if (!object->isObjectAlive()) {
+
 					deleteMutex.lock();
 					oc.deleteObject(object->getID());
 					deleteMutex.unlock();
-					break;
+
 				}
 			}
 		}
@@ -148,9 +149,12 @@ public:
 	}
 
 	bool init(std::pair<int, int> _windowSize, std::string _windowName, bool _resizable, int _framerate) {
-		window = std::make_unique<sf::RenderWindow>(
-			sf::VideoMode(_windowSize.first, _windowSize.second),
-			_windowName, _resizable ? (sf::Style::Default) : (sf::Style::Close));
+
+		window = std::make_unique<sf::RenderWindow>
+			(
+				sf::VideoMode(_windowSize.first, _windowSize.second),
+				_windowName, _resizable ? (sf::Style::Default) : (sf::Style::Close)
+			);
 		window->setFramerateLimit(_framerate);
 		window->setVerticalSyncEnabled(true);
 		window->setKeyRepeatEnabled(false);
@@ -193,10 +197,14 @@ public:
 
 		}
 		else {
+
 			std::cout << "!- Init the window -!\n";
+
 		}
+
 		renderThread.wait();
 		collisionThread.wait();
+	
 	}
 
 } inline engine;

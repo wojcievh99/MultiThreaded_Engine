@@ -3,9 +3,9 @@ export module Eventable;
 import Globals;
 
 export class Eventable {
-	bool stopCheckingEvents;
+	bool __stopCheckingEvents;
 public:
-	Eventable() : stopCheckingEvents(false) {}
+	Eventable() : __stopCheckingEvents(false) {}
 	~Eventable() {
 		clearAllAssociations();
 	}
@@ -39,9 +39,9 @@ public:
 		_rButtonAssociation.clear();
 	}
 
-	void lockEvents() { stopCheckingEvents = true; }
-	void unlockEvents() { stopCheckingEvents = false; }
+	void lockEvents() { __stopCheckingEvents = true; }
+	void unlockEvents() { __stopCheckingEvents = false; }
 	
-	bool isLocked() { return stopCheckingEvents; }
+	bool isLocked() { return __stopCheckingEvents; }
 
 };
