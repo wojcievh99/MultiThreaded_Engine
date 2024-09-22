@@ -72,6 +72,12 @@
     <ClCompile Include="Animateable.ixx">
       <Filter>Source Files\Engine\ObjectDerived</Filter>
     </ClCompile>
+    <ClCompile Include="Temp.ixx">
+      <Filter>Source Files\Engine\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.ixx">
+      <Filter>Source Files\Engine\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="TextFile.md">

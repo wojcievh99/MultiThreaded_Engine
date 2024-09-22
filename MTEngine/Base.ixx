@@ -28,7 +28,7 @@ public:
 		return __object_className;
 	}
 
-	sf::Vector2f getCurrentPosition() {
+	sf::Vector2f getPosition() {
 		return _object_position;
 	}
 

@@ -16,34 +16,42 @@ export class Engine {
 			window->setActive(true);
 			isWindowOpen = true;
 
+			sf::Int32 prevTime = globalClock.getElapsedTime().asMilliseconds();
+
 			while (isWindowOpen) {
-				window->clear();
 
-				deleteMutex.lock();
-				drawAllObjects(); 
-				deleteMutex.unlock();
+				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
+				if (elapsedTime - prevTime > (100 / __framerate)) {
 
-				window->display();
+					prevTime = elapsedTime;
+					window->clear();
+
+					deleteMutex.lock();
+					drawAllObjects();
+					deleteMutex.unlock();
+
+					window->display();
+				}
 			} 
 			window->close();
 		}
 	}
 
 	static void checkAndExecuteCollisionsInAllObjects() {
-		for (std::pair<uint64_t, std::shared_ptr<Collidable>> e : oc._objectWithCollisions) {
-			for (std::pair<uint64_t, std::shared_ptr<Collidable>> otherObject : oc._objectWithCollisions) {
-				if (e.first != otherObject.first and e.second->isCollisionPossible(otherObject.second)) {
-					if (e.second->isInCollisionWith(otherObject.second)) {
-						if (e.second->putObjectColliding(otherObject.second)) {
+		for (std::pair<uint64_t, std::weak_ptr<Collidable>> e : oc._objectWithCollisions) {
+			for (std::pair<uint64_t, std::weak_ptr<Collidable>> otherObject : oc._objectWithCollisions) {
+				if (e.first != otherObject.first and e.second.lock()->isCollisionPossible(otherObject.second)) {
+					if (e.second.lock()->isInCollisionWith(otherObject.second)) {
+						if (e.second.lock()->putObjectColliding(otherObject.second.lock())) {
 
-							e.second->putLastObjectColliding(otherObject.second);
-							e.second->afterCollision();
+							e.second.lock()->putLastObjectColliding(otherObject.second.lock());
+							e.second.lock()->afterCollision();
 
 						}
 					}
 					else {
-						if (e.second->getLastObjectColliding().lock() == otherObject.second)
-							e.second->putObjectColliding(nullptr);
+						if (e.second.lock()->getLastObjectColliding().lock() == otherObject.second.lock())
+							e.second.lock()->putObjectColliding(nullptr);
 					}
 				}
 			}
@@ -57,7 +65,7 @@ export class Engine {
 
 			while (isWindowOpen) {
 				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
-				if (elapsedTime - prevTime > (100 / 12)) {
+				if (elapsedTime - prevTime > (100 / (__framerate * 2))) {
 
 					prevTime = elapsedTime;
 					checkAndExecuteCollisionsInAllObjects();
@@ -75,25 +83,25 @@ export class Engine {
 				break;
 
 			}
-			for (std::pair<uint64_t, std::shared_ptr<Eventable>> e : oc._objectsWithEventsAssociatedWithFunctions) {
-				if (!e.second->isLocked()) {
+			for (std::pair<uint64_t, std::weak_ptr<Eventable>> e : oc._objectsWithEventsAssociatedWithFunctions) {
+				if (!e.second.lock()->isLocked()) {
 
-					for (auto const& [key, func] : e.second->_keyAssociation)
+					for (auto const& [key, func] : e.second.lock()->_keyAssociation)
 						if (event->type == sf::Event::KeyPressed and event->key.code == key)
 						{
 							Functor f = func; f();
 						}
-					for (auto const& [key, func] : e.second->_rKeyAssociation)
+					for (auto const& [key, func] : e.second.lock()->_rKeyAssociation)
 						if (event->type == sf::Event::KeyReleased and event->key.code == key)
 						{
 							Functor f = func; f();
 						}
-					for (auto const& [button, func] : e.second->_buttonAssociation)
+					for (auto const& [button, func] : e.second.lock()->_buttonAssociation)
 						if (event->type == sf::Event::MouseButtonPressed and event->mouseButton.button == button)
 						{
 							Functor f = func; f();
 						}
-					for (auto const& [button, func] : e.second->_rButtonAssociation)
+					for (auto const& [button, func] : e.second.lock()->_rButtonAssociation)
 						if (event->type == sf::Event::MouseButtonReleased and event->mouseButton.button == button)
 						{
 							Functor f = func; f();
@@ -148,14 +156,14 @@ public:
 		return std::weak_ptr<T>(std::dynamic_pointer_cast<T>(std::move(r)));
 	}
 
-	bool init(std::pair<int, int> _windowSize, std::string _windowName, bool _resizable, int _framerate) {
+	bool init(std::pair<int, int> _windowSize, std::string _windowName, bool _resizable, unsigned int _framerate) {
 
 		window = std::make_unique<sf::RenderWindow>
 			(
 				sf::VideoMode(_windowSize.first, _windowSize.second),
 				_windowName, _resizable ? (sf::Style::Default) : (sf::Style::Close)
 			);
-		window->setFramerateLimit(_framerate);
+		window->setFramerateLimit(_framerate); __framerate = _framerate;
 		window->setVerticalSyncEnabled(true);
 		window->setKeyRepeatEnabled(false);
 		window->setPosition({ 0,0 });
@@ -183,7 +191,7 @@ public:
 
 			while (window->isOpen()) {
 				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
-				if (elapsedTime - prevTime > 100 / 12) {
+				if (elapsedTime - prevTime > 100 / (__framerate * 2)) {
 					prevTime = elapsedTime;
 
 					checkAndExecuteEventsInAllObjects();

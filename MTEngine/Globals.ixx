@@ -9,6 +9,7 @@ export import Concepts;
 export sf::Clock globalClock;
 export sf::Mutex deleteMutex;
 
+export unsigned int __framerate;
 export bool isWindowOpen = false;
 
 export std::unique_ptr<sf::RenderWindow> window;

@@ -18,8 +18,8 @@ export class OC {
 	std::list<std::pair<uint64_t, Functor>> _objectDraws;
 	std::list<std::pair<uint64_t, Functor>> _objectUpdates;
 	std::list<std::pair<uint64_t, std::pair<Functor, Functor>>> _objectAnimations;
-	std::list<std::pair<uint64_t, std::shared_ptr<Collidable>>> _objectWithCollisions;
-	std::list<std::pair<uint64_t, std::shared_ptr<Eventable>>> _objectsWithEventsAssociatedWithFunctions;
+	std::list<std::pair<uint64_t, std::weak_ptr<Collidable>>> _objectWithCollisions;
+	std::list<std::pair<uint64_t, std::weak_ptr<Eventable>>> _objectsWithEventsAssociatedWithFunctions;
 
 	std::map<std::string, std::set<uint64_t>> _membership;
 

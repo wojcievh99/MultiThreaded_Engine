@@ -33,13 +33,22 @@ public:
 
 	}
 
-	std::map<std::string, std::string>::iterator getAnimationItByInternaName(std::string internalName) {
-		std::map<std::string, std::string>::iterator result = _animationsNames.begin();
-		for (auto e : _animationsNames) {
-			if (e.first == internalName) return result;
-			result++;
+	std::map<std::string, std::string>::iterator getAnimationItByInternalName(std::string internalName) {
+		try {
+
+			_animationsNames.at(internalName);
+
+			std::map<std::string, std::string>::iterator result = _animationsNames.begin();
+			for (auto e : _animationsNames) {
+				if (e.first == internalName) return result;
+				result++;
+			}
+
 		}
-		return result;
+		catch (const std::out_of_range) {
+			//return std::map<std::string, std::string>::iterator();
+			return _animationsNames.end();
+		}
 	}
 
 	bool setAnimationWithIt(std::map<std::string, std::string>::iterator newAnimation) {
