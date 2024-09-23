@@ -50,7 +50,7 @@ public:
 			_objectUpdates.push_back({ r->getID(), Functor([x]() { x->updateObject(); }) });
 		}
 		if (std::shared_ptr<Animateable> x = std::dynamic_pointer_cast<Animateable>(r)) {
-			_objectAnimations.push_back({ r->getID(), {Functor([x]() { x->animateObject(); }),  Functor([x]() { x->updateAnimation(); })} });
+			_objectAnimations.push_back({ r->getID(), {Functor([x]() { x->updateAnimation(); }),  Functor([x]() { x->animateObject(); })} });
 		}
 		if (std::shared_ptr<Eventable> x = std::dynamic_pointer_cast<Eventable>(r)) {
 			_objectsWithEventsAssociatedWithFunctions.push_back({ r->getID(), x });
