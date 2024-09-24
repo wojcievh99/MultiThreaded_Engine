@@ -13,6 +13,12 @@ export class Animateable {
 	unsigned int __framerate; unsigned int __animationIndex;
 	sf::Int32 __prevTime = globalClock.getElapsedTime().asMilliseconds();
 
+	void loadNewAnimation() {
+		__objectTexture.loadFromFile(__folderPath + "/" + __currentAnimation->second);
+		_body.setTexture(__objectTexture); _body.setOrigin(sf::Vector2f(__frameDimensions.x / 2.f, __frameDimensions.y / 2.f));
+		_body.setTextureRect(sf::IntRect(this->__frameDimensions.x, 0, __frameDimensions.x, __frameDimensions.y));
+	}
+
 protected:
 	std::map<std::string, std::string> _animationsNames; // <internalName, linkedName>
 	sf::Sprite _body;
@@ -39,8 +45,15 @@ public:
 	}
 
 	void animateObject() {
+		if (__currentAnimation == _animationsNames.end()) {
+			__currentAnimation = _animationsNames.begin();
+			loadNewAnimation();
+		}
+
 		sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
 		if (elapsedTime - __prevTime > (1000 / __framerate)) {
+
+			__prevTime = elapsedTime;
 
 			_body.setTextureRect(
 				sf::IntRect(
@@ -54,12 +67,7 @@ public:
 		}
 	}
 
-	void updateAnimation() {
-		if (__currentAnimation == _animationsNames.end()) {
-			__currentAnimation = _animationsNames.begin();
-			loadNewAnimation();
-		}
-	}
+	virtual void updateAnimation() {}
 
 	std::map<std::string, std::string>::iterator getAnimationItByInternalName(std::string internalName) {
 		try {
@@ -81,12 +89,6 @@ public:
 	bool setAnimationWithIt(std::map<std::string, std::string>::iterator newAnimation) {
 		if (__currentAnimation == newAnimation) return false;
 		__currentAnimation = newAnimation; loadNewAnimation(); return true;
-	}
-
-	void loadNewAnimation() {
-		__objectTexture.loadFromFile(__folderPath + "/" + __currentAnimation->second);
-		_body.setTexture(__objectTexture); 
-		_body.setOrigin(sf::Vector2f(__frameDimensions.x / 2.f, __frameDimensions.y / 2.f));
 	}
 
 };

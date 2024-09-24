@@ -78,6 +78,9 @@
     <ClCompile Include="Particle.ixx">
       <Filter>Source Files\Engine\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Character.ixx">
+      <Filter>Source Files\Engine\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="TextFile.md">

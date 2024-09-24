@@ -177,6 +177,7 @@
   <ItemGroup>
     <ClCompile Include="Animateable.ixx" />
     <ClCompile Include="Base.ixx" />
+    <ClCompile Include="Character.ixx" />
     <ClCompile Include="Collidable.ixx" />
     <ClCompile Include="Concepts.ixx" />
     <ClCompile Include="Drawable.ixx" />
