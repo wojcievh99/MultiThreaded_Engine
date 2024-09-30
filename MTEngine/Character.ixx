@@ -14,7 +14,7 @@ export class Character : public Base, public Drawable, public Moveable, public A
 
 public:
 	Character(sf::Vector2f position)
-		: Base(typeid(this).raw_name(), position), Moveable(), Animateable("textures/character1") 
+		: Base(typeid(this).raw_name()), Moveable(), Animateable("textures/character1") 
 	{
 		this->setAnimationWithIt(this->getAnimationItByInternalName("IDLE"));
 		_body.setScale(sf::Vector2f(5.f, 5.f));
@@ -24,6 +24,10 @@ public:
 				this->setMoveDirection(sf::Vector2f(5.f, this->getMoveDir().y));
 			}
 		));
+	}
+
+	sf::Vector2f getPosition() {
+		return this->_body.getPosition();
 	}
 
 	void drawObject() {

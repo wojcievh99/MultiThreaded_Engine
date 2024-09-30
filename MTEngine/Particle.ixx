@@ -16,7 +16,7 @@ export class Particle : public Base, public Drawable, public Updateable, public 
 public:
 	Particle(sf::Vector2f _pos, sf::Vector2f __moveDir,
 		float __radius, sf::Color _c = sf::Color(255, 255, 255))
-		: Base(typeid(this).raw_name(), _pos), Moveable(__moveDir),
+		: Base(typeid(this).raw_name()), Moveable(__moveDir),
 		Collidable(_body.getGlobalBounds()), _radius(__radius), collisionCount(0)
 	{
 		_body.setRadius(_radius);
@@ -28,17 +28,20 @@ public:
 		window->draw(_body);
 	}
 
+	sf::Vector2f getPosition() {
+		return this->_body.getPosition();
+	}
+
 	void updateObject() {
 		this->updateObjectGlobalBounds(_body.getGlobalBounds());
-		this->_object_position = _body.getPosition();
 		this->_radius = _body.getRadius();
 
 		if (collisionCount > 100) this->_object_alive = false;
 
-		if ((this->_object_position.x + 2 * _radius) >= window->getSize().x or this->_object_position.x <= 0) {
+		if ((this->getPosition().x + 2 * _radius) >= window->getSize().x or this->getPosition().x <= 0) {
 			this->setMoveDirection(sf::Vector2f{ -this->getMoveDir().x, this->getMoveDir().y });
 		}
-		if ((this->_object_position.y + 2 * _radius) >= window->getSize().y or this->_object_position.y <= 0) {
+		if ((this->getPosition().y + 2 * _radius) >= window->getSize().y or this->getPosition().y <= 0) {
 			this->setMoveDirection(sf::Vector2f{ this->getMoveDir().x, -this->getMoveDir().y });
 		}
 
@@ -58,8 +61,8 @@ public:
 
 		float diagonal =
 			sqrt(
-				pow(abs((obPosition.x + obRadius) - (this->_object_position.x + this->_radius)), 2) +
-				pow(abs((obPosition.y + obRadius) - (this->_object_position.y + this->_radius)), 2)
+				pow(abs((obPosition.x + obRadius) - (this->getPosition().x + this->_radius)), 2) +
+				pow(abs((obPosition.y + obRadius) - (this->getPosition().y + this->_radius)), 2)
 			);
 
 		//std::cout << diagonal << " <= " << (obRadius + this->_radius) << std::endl;
