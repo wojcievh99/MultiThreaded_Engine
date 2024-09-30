@@ -177,7 +177,6 @@
   <ItemGroup>
     <ClCompile Include="Animateable.ixx" />
     <ClCompile Include="Base.ixx" />
-    <ClCompile Include="Character.ixx" />
     <ClCompile Include="Collidable.ixx" />
     <ClCompile Include="Concepts.ixx" />
     <ClCompile Include="Drawable.ixx" />
@@ -185,10 +184,10 @@
     <ClCompile Include="Eventable.ixx" />
     <ClCompile Include="Functor.ixx" />
     <ClCompile Include="Globals.ixx" />
+    <ClCompile Include="MainCharacter.ixx" />
     <ClCompile Include="Moveable.ixx" />
     <ClCompile Include="MTEngine.cpp" />
     <ClCompile Include="OC.ixx" />
-    <ClCompile Include="Particle.ixx" />
     <ClCompile Include="Temp.ixx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

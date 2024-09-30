@@ -75,10 +75,7 @@
     <ClCompile Include="Temp.ixx">
       <Filter>Source Files\Engine\Other</Filter>
     </ClCompile>
-    <ClCompile Include="Particle.ixx">
-      <Filter>Source Files\Engine\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Character.ixx">
+    <ClCompile Include="MainCharacter.ixx">
       <Filter>Source Files\Engine\Objects</Filter>
     </ClCompile>
   </ItemGroup>
