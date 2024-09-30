@@ -182,6 +182,7 @@
     <ClCompile Include="Drawable.ixx" />
     <ClCompile Include="Engine.ixx" />
     <ClCompile Include="Eventable.ixx" />
+    <ClCompile Include="FloorRect.ixx" />
     <ClCompile Include="Functor.ixx" />
     <ClCompile Include="Globals.ixx" />
     <ClCompile Include="MainCharacter.ixx" />

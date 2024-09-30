@@ -17,11 +17,14 @@ export class Engine {
 
 						}
 					}
-					else {
-						if (e.second.lock()->getLastObjectColliding().lock() == otherObject.second.lock())
+					else if (e.second.lock()->getLastObjectColliding().lock() == otherObject.second.lock())
 							e.second.lock()->putObjectColliding(nullptr);
-					}
 				}
+				else if (e.second.lock()->getLastObjectColliding().lock() == otherObject.second.lock())
+						e.second.lock()->putObjectColliding(nullptr);
+				// when isInCollision() is not overwritten it does the same thing
+				// as isCollisionPossible() and this second else if is crutial to 
+				// find collisions corectlly and effectively 
 			}
 		}
 	}

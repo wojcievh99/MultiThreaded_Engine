@@ -3,18 +3,20 @@ export module Collidable;
 import Globals;
 
 export class Collidable {
-	sf::FloatRect __objectBounds;
 protected:
 	std::weak_ptr<Collidable> _objectColliding;
 	std::weak_ptr<Collidable> _lastObjectColliding;
 public:
-	Collidable(sf::FloatRect objectBounds = { {0.f, 0.f}, {0.f, 0.f} }) : __objectBounds(objectBounds) {}
 
-	virtual bool isInCollisionWith(std::weak_ptr<Collidable> ob) = 0;
+	virtual sf::FloatRect getObjectBounds() = 0;
+
+	virtual bool isInCollisionWith(std::weak_ptr<Collidable> ob) {
+		return isCollisionPossible(ob);
+	}
 	virtual void afterCollision() = 0;
 
 	virtual bool isCollisionPossible(std::weak_ptr<Collidable> ob) {
-		return this->__objectBounds.intersects(ob.lock()->__objectBounds);
+		return this->getObjectBounds().intersects(ob.lock()->getObjectBounds());
 	}
 
 	bool putObjectColliding(std::shared_ptr<Collidable> ob) {
@@ -31,10 +33,5 @@ public:
 
 	std::weak_ptr<Collidable> getLastObjectColliding() {
 		return _lastObjectColliding;
-	}
-
-	bool updateObjectGlobalBounds(sf::FloatRect newObjectBounds) {
-		if (this->__objectBounds == newObjectBounds) return false;
-		this->__objectBounds = newObjectBounds; return true;
 	}
 };
