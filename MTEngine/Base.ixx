@@ -14,7 +14,7 @@ public:
 		: __object_className(_className), _object_position(_position), _object_alive(true)
 	{
 		this->__object_id = ++globalID;
-		std::cout << "[ID: " << __object_id << ", className: " << __object_className << "](+) \n";
+		//std::cout << "[ID: " << __object_id << ", className: " << __object_className << "](+) \n";
 	}
 	~Base() {
 		std::cout << "[ID: " << __object_id << ", className: " << __object_className << "](-) \n";
@@ -37,7 +37,7 @@ public:
 	}
 
 	virtual void garbage() {
-		_object_alive = false;
+		//_object_alive = false;
 		std::cout << "[ID: " << __object_id << "](-) \n";
 	}
 

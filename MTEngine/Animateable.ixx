@@ -27,21 +27,38 @@ public:
 	Animateable(std::string newFolderPath, unsigned int framerate = 10)
 		: __folderPath(newFolderPath), __framerate(framerate), __animationIndex(0)
 	{
-		std::ifstream file(__folderPath + "/" + "animation-info.txt");
+
+		std::ifstream file;
+		file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+		try {
+			file.open(__folderPath + "/" + "animation-info.txt"); 
+			if (!file.is_open()) 
+				throw std::ifstream::failure(red + " - File Not Specified [Class Animatable] - " + reset);
+		}
+		catch (std::exception& err) {
+			std::cout << red << " - Animatable Class Failed - \n" << reset;
+		}
 
 		std::string internalName, linkedName;
 
-		file >> linkedName >> internalName; // dimensions: __frameDimensions [x, y]
-		__frameDimensions.x = std::stoi(linkedName);
-		__frameDimensions.y = std::stoi(internalName);
+		try {
+			file >> linkedName >> internalName; // dimensions: __frameDimensions [x, y]
+			__frameDimensions.x = std::stoi(linkedName);
+			__frameDimensions.y = std::stoi(internalName);
 
-		while (!file.eof()) {
-			file >> internalName; file >> linkedName; file >> linkedName;
-			_animationsNames.insert(std::make_pair(internalName, linkedName));
+			while (!file.eof()) {
+				file >> internalName; file >> linkedName; file >> linkedName;
+				_animationsNames.insert(std::make_pair(internalName, linkedName));
+			}
+
+			__currentAnimation = _animationsNames.end();
+		}
+		catch (std::exception &err) {
+			std::cout << red << " - Animatable Class Failed - \n" << reset;
 		}
 
 		file.close();
-		__currentAnimation = _animationsNames.end();
 	}
 
 	void animateObject() {

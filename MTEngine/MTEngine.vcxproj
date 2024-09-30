@@ -198,6 +198,7 @@
     <ClCompile Include="Updateable.ixx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AnimatableClassUsage.md" />
     <None Include="TextFile.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -5,38 +5,6 @@ import OC;
 
 export class Engine {
 
-	static void drawAllObjects() {
-		for (auto const& e : oc._objectDraws) {
-			Functor f = e.second; f();
-		}
-	}
-
-	static void renderingThread() {
-		if (window) {
-			window->setActive(true);
-			isWindowOpen = true;
-
-			sf::Int32 prevTime = globalClock.getElapsedTime().asMilliseconds();
-
-			while (isWindowOpen) {
-
-				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
-				if (elapsedTime - prevTime > (1000 / __framerate)) {
-
-					prevTime = elapsedTime;
-					window->clear();
-
-					deleteMutex.lock();
-					drawAllObjects();
-					deleteMutex.unlock();
-
-					window->display();
-				}
-			} 
-			window->close();
-		}
-	}
-
 	static void checkAndExecuteCollisionsInAllObjects() {
 		for (std::pair<uint64_t, std::weak_ptr<Collidable>> e : oc._objectWithCollisions) {
 			for (std::pair<uint64_t, std::weak_ptr<Collidable>> otherObject : oc._objectWithCollisions) {
@@ -68,7 +36,11 @@ export class Engine {
 				if (elapsedTime - prevTime > (1000 / (__framerate * 2))) {
 
 					prevTime = elapsedTime;
+
+					deleteMutex.lock();
 					checkAndExecuteCollisionsInAllObjects();
+					deleteMutex.unlock();
+
 
 				}
 			}
@@ -112,6 +84,12 @@ export class Engine {
 		}
 	}
 
+	void drawAllObjects() {
+		for (auto const& e : oc._objectDraws) {
+			Functor f = e.second; f();
+		}
+	}
+
 	void moveAllObjects() {
 		for (auto const& e : oc._objectMoves) {
 			Functor f = e.second; f();
@@ -140,6 +118,7 @@ export class Engine {
 					oc.deleteObject(object->getID());
 					deleteMutex.unlock();
 
+					break;
 				}
 			}
 		}
@@ -171,14 +150,22 @@ public:
 		event = std::make_unique<sf::Event>();
 
 		isWindowOpen = true;
+
 		std::cout << "<- Engine Loaded ->\n";
 		return isWindowOpen;
 	}
 
+	bool lockViewOnObject(std::pair<std::string, uint64_t> _objectData) {
+		if (oc._database[_objectData.first][_objectData.second] != nullptr) {
+			viewObjectData = _objectData;
+			return viewLock = true;
+		}
+		return false;
+	}
+
 	void run() {
 
-		sf::Thread renderThread(&renderingThread);
-		renderThread.launch();
+		isWindowOpen = true;
 
 		sf::Thread collisionThread(&watchCollisionThread);
 		collisionThread.launch();
@@ -187,12 +174,24 @@ public:
 
 		if (window) {
 			window->setActive(false);
-			isWindowOpen = true;
 
 			while (window->isOpen()) {
 				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
-				if (elapsedTime - prevTime > 1000 / (__framerate * 2)) {
+				if (elapsedTime - prevTime > 1000 / (__framerate)) {
 					prevTime = elapsedTime;
+
+					if (viewLock) {
+						view.reset(sf::FloatRect(
+							(int)oc._database[viewObjectData.first][viewObjectData.second]->getPosition().x,
+							(int)oc._database[viewObjectData.first][viewObjectData.second]->getPosition().y,
+							(int)window->getSize().x, (int)window->getSize().y
+						));
+						view.setCenter(
+							oc._database[viewObjectData.first][viewObjectData.second]->getPosition().x,
+							oc._database[viewObjectData.first][viewObjectData.second]->getPosition().y
+						);
+						window->setView(view);
+					}
 
 					checkAndExecuteEventsInAllObjects();
 					moveAllObjects();
@@ -200,8 +199,12 @@ public:
 					animateAllObjects();
 					deleteAllObjects();
 					
+					window->clear();
+					drawAllObjects();
+					window->display();
 				}
 			} 
+			window->close();
 
 		}
 		else {
@@ -210,7 +213,6 @@ public:
 
 		}
 
-		renderThread.wait();
 		collisionThread.wait();
 	
 	}
