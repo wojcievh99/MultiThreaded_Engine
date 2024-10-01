@@ -12,8 +12,9 @@ import Eventable;
 export class MainCharacter : public Base, public Drawable, public Moveable, public Collidable, public Updateable, public Eventable {
 	sf::RectangleShape _body;
 
+	std::vector<bool> _points; // 0: left-top, 1. right-top, 2. left-bottom, 3. right-bottom 
 public:
-	MainCharacter(sf::Vector2f position) : Base(typeid(this).raw_name()) 
+	MainCharacter(sf::Vector2f position) : Base(typeid(this).raw_name()), _points({true, true, true, true})
 	{
 		_body.setPosition(position);
 		_body.setSize(sf::Vector2f(50.f, 80.f));
@@ -75,6 +76,66 @@ public:
 
 	void updateObject() {
 
+		for (const auto& e : this->_objectColliding) {
+			if (e->getObjectBounds()
+				.contains(sf::Vector2f(
+					this->getObjectBounds().left, 
+					this->getObjectBounds().top))
+				) 
+			{
+				_points[0] = true;
+			}
+			if (e->getObjectBounds()
+				.contains(sf::Vector2f(
+					this->getObjectBounds().left + this->getObjectBounds().width, 
+					this->getObjectBounds().top))
+				)
+			{
+				_points[1] = true;
+			}
+			if (e->getObjectBounds()
+				.contains(sf::Vector2f(
+					this->getObjectBounds().left, 
+					this->getObjectBounds().top + this->getObjectBounds().height))
+				)
+			{
+				_points[2] = true;
+			}
+			if (e->getObjectBounds()
+				.contains(sf::Vector2f(
+					this->getObjectBounds().left + this->getObjectBounds().width, 
+					this->getObjectBounds().top + this->getObjectBounds().height))
+				)
+			{
+				_points[3] = true;
+			}
+		}
+
+		if (!_points[0] and !_points[2]) {
+			this->lockIndEvent(sf::Keyboard::A);
+			this->setMoveDirection(sf::Vector2f(0.f, this->getMoveDir().y));
+		}
+		else this->unlockIndEvent(sf::Keyboard::A);
+
+		if (!_points[1] and !_points[3]) {
+			this->lockIndEvent(sf::Keyboard::D);
+			this->setMoveDirection(sf::Vector2f(0.f, this->getMoveDir().y));
+		}
+		else this->unlockIndEvent(sf::Keyboard::D);
+
+		if (!_points[0] and !_points[1]) {
+			this->lockIndEvent(sf::Keyboard::W);
+			this->setMoveDirection(sf::Vector2f(this->getMoveDir().x, 0.f));
+		}
+		else this->unlockIndEvent(sf::Keyboard::W);
+
+		if (!_points[2] and !_points[3]) {
+			this->lockIndEvent(sf::Keyboard::S);
+			this->setMoveDirection(sf::Vector2f(this->getMoveDir().x, 0.f));
+		}
+		else this->unlockIndEvent(sf::Keyboard::S);
+
+		_points = { false, false, false, false };
 	}
 
 	void afterCollision() {

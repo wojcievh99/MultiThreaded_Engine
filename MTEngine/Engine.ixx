@@ -8,23 +8,17 @@ export class Engine {
 	static void checkAndExecuteCollisionsInAllObjects() {
 		for (std::pair<uint64_t, std::weak_ptr<Collidable>> e : oc._objectWithCollisions) {
 			for (std::pair<uint64_t, std::weak_ptr<Collidable>> otherObject : oc._objectWithCollisions) {
-				if (e.first != otherObject.first and e.second.lock()->isCollisionPossible(otherObject.second)) {
+				if (e.first != otherObject.first) {//and e.second.lock()->isCollisionPossible(otherObject.second)) {
 					if (e.second.lock()->isInCollisionWith(otherObject.second)) {
 						if (e.second.lock()->putObjectColliding(otherObject.second.lock())) {
 
-							e.second.lock()->putLastObjectColliding(otherObject.second.lock());
 							e.second.lock()->afterCollision();
 
 						}
 					}
-					else if (e.second.lock()->getLastObjectColliding().lock() == otherObject.second.lock())
-							e.second.lock()->putObjectColliding(nullptr);
+					else if (e.second.lock()->checkCollisionList(otherObject.second.lock()))
+						e.second.lock()->eraseObjectColliding(otherObject.second.lock());
 				}
-				else if (e.second.lock()->getLastObjectColliding().lock() == otherObject.second.lock())
-						e.second.lock()->putObjectColliding(nullptr);
-				// when isInCollision() is not overwritten it does the same thing
-				// as isCollisionPossible() and this second else if is crutial to 
-				// find collisions corectlly and effectively 
 			}
 		}
 	}
@@ -62,22 +56,26 @@ export class Engine {
 				if (!e.second.lock()->isLocked()) {
 
 					for (auto const& [key, func] : e.second.lock()->_keyAssociation)
-						if (event->type == sf::Event::KeyPressed and event->key.code == key)
+						if (!e.second.lock()->_lockedIndKeys.contains(key) 
+							and event->type == sf::Event::KeyPressed and event->key.code == key)
 						{
 							Functor f = func; f();
 						}
 					for (auto const& [key, func] : e.second.lock()->_rKeyAssociation)
-						if (event->type == sf::Event::KeyReleased and event->key.code == key)
+						if (!e.second.lock()->_lockedIndKeys.contains(key) 
+							and event->type == sf::Event::KeyReleased and event->key.code == key)
 						{
 							Functor f = func; f();
 						}
 					for (auto const& [button, func] : e.second.lock()->_buttonAssociation)
-						if (event->type == sf::Event::MouseButtonPressed and event->mouseButton.button == button)
+						if (!e.second.lock()->_lockedIndButtons.contains(button) 
+							and event->type == sf::Event::MouseButtonPressed and event->mouseButton.button == button)
 						{
 							Functor f = func; f();
 						}
 					for (auto const& [button, func] : e.second.lock()->_rButtonAssociation)
-						if (event->type == sf::Event::MouseButtonReleased and event->mouseButton.button == button)
+						if (!e.second.lock()->_lockedIndButtons.contains(button)
+							and event->type == sf::Event::MouseButtonReleased and event->mouseButton.button == button)
 						{
 							Functor f = func; f();
 						}
@@ -178,7 +176,7 @@ public:
 		if (window) {
 			window->setActive(false);
 
-			while (window->isOpen()) {
+			while (isWindowOpen) {
 				sf::Int32 elapsedTime = globalClock.getElapsedTime().asMilliseconds();
 				if (elapsedTime - prevTime > 1000 / (__framerate)) {
 					prevTime = elapsedTime;

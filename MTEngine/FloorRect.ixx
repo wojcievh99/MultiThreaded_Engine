@@ -10,11 +10,11 @@ export class FloorRect : public Base, public Drawable, public Collidable {
 	sf::RectangleShape _body;
 
 public:
-	FloorRect(sf::Vector2f position, sf::Color color) : Base(typeid(this).raw_name()) 
+	FloorRect(sf::Vector2f position, sf::Vector2f size, sf::Color color) : Base(typeid(this).raw_name())
 	{
 		_body.setPosition(position);
 		_body.setFillColor(color);
-		_body.setSize(sf::Vector2f(150.f, 150.f));
+		_body.setSize(size);
 	}
 
 	void drawObject() {

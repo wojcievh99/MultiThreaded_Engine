@@ -13,22 +13,33 @@ int main()
 	//						(size, windowName, resizable, framerate);
 	bool init = engine.init({ 1800, 1200 }, "Engine Test", false, 60);
 
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 5; j++) {
-			engine.addObject<FloorRect>(
-				std::make_shared<FloorRect>(
-					sf::Vector2f(200.f + 150.f * j, 200.f + 150.f * i),
-					i % 2 == 0 
-						? j % 2 == 0 ? sf::Color(74, 74, 74) : sf::Color(47, 47, 47)
-						: j % 2 == 0 ? sf::Color(47, 47, 47) : sf::Color(74, 74, 74)
-				)
-			);
-		}
-	}
+	engine.addObject<FloorRect>(
+		std::make_shared<FloorRect>(
+			sf::Vector2f(200.f, 200.f),
+			sf::Vector2f(500.f, 400.f),
+			sf::Color(47, 47, 47)
+		)
+	);
+
+	engine.addObject<FloorRect>(
+		std::make_shared<FloorRect>(
+			sf::Vector2f(600.f, 400.f),
+			sf::Vector2f(400.f, 100.f),
+			sf::Color(47, 47, 47)
+		)
+	);
+
+	engine.addObject<FloorRect>(
+		std::make_shared<FloorRect>(
+			sf::Vector2f(900.f, 300.f),
+			sf::Vector2f(500.f, 400.f),
+			sf::Color(47, 47, 47)
+		)
+	);
 
 	auto c = engine.addObject<MainCharacter>(
 		std::make_shared<MainCharacter>(
-			sf::Vector2f(100.f, 100.f)
+			sf::Vector2f(350.f, 350.f)
 		)
 	);
 

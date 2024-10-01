@@ -78,6 +78,9 @@
     <ClCompile Include="MainCharacter.ixx">
       <Filter>Source Files\Engine\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="FloorRect.ixx">
+      <Filter>Source Files\Engine\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="TextFile.md">
