@@ -6,42 +6,24 @@ import Engine;
 
 import MainCharacter;
 
-import FloorRect;
+import R;
 
 int main()
 {
 	//						(size, windowName, resizable, framerate);
-	bool init = engine.init({ 1800, 1200 }, "Engine Test", false, 60);
-
-	engine.addObject<FloorRect>(
-		std::make_shared<FloorRect>(
-			sf::Vector2f(200.f, 200.f),
-			sf::Vector2f(500.f, 400.f),
-			sf::Color(47, 47, 47)
-		)
-	);
-
-	engine.addObject<FloorRect>(
-		std::make_shared<FloorRect>(
-			sf::Vector2f(600.f, 400.f),
-			sf::Vector2f(400.f, 100.f),
-			sf::Color(47, 47, 47)
-		)
-	);
-
-	engine.addObject<FloorRect>(
-		std::make_shared<FloorRect>(
-			sf::Vector2f(900.f, 300.f),
-			sf::Vector2f(500.f, 400.f),
-			sf::Color(47, 47, 47)
-		)
-	);
+	bool init = engine.init({ 1800, 1200 }, "ShadowFighter", false, 60); 
 
 	auto c = engine.addObject<MainCharacter>(
 		std::make_shared<MainCharacter>(
 			sf::Vector2f(350.f, 350.f)
 		)
 	);
+
+	engine.addObject<R>(std::make_shared<R>(
+		sf::Vector2f(100.f, 100.f),
+		sf::Vector2f(200.f, 100.f),
+		sf::Color::Green
+	));
 
 	engine.lockViewOnObject(
 		std::make_pair(c.lock()->getClassName(), c.lock()->getID())

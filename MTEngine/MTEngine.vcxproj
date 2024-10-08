@@ -182,7 +182,8 @@
     <ClCompile Include="Drawable.ixx" />
     <ClCompile Include="Engine.ixx" />
     <ClCompile Include="Eventable.ixx" />
-    <ClCompile Include="FloorRect.ixx" />
+    <ClCompile Include="Physicsable.ixx" />
+    <ClCompile Include="R.ixx" />
     <ClCompile Include="Functor.ixx" />
     <ClCompile Include="Globals.ixx" />
     <ClCompile Include="MainCharacter.ixx" />
@@ -195,6 +196,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Textureable.ixx" />
     <ClCompile Include="Updateable.ixx" />
   </ItemGroup>
   <ItemGroup>

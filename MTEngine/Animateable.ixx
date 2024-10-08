@@ -5,8 +5,8 @@ import Globals;
 export class Animateable {
 
 	std::string __folderPath;
-	std::map<std::string, std::string>::iterator __currentAnimation;
-	sf::Vector2u __frameDimensions;
+	std::map<std::string, std::pair<std::string, unsigned int>>::iterator __currentAnimation;
+	sf::Vector2u __frameDimensions; unsigned int offset;
 
 	sf::Texture __objectTexture;
 
@@ -14,13 +14,13 @@ export class Animateable {
 	sf::Int32 __prevTime = globalClock.getElapsedTime().asMilliseconds();
 
 	void loadNewAnimation() {
-		__objectTexture.loadFromFile(__folderPath + "/" + __currentAnimation->second);
+		__objectTexture.loadFromFile(__folderPath + "/" + __currentAnimation->second.first);
 		_body.setTexture(__objectTexture); _body.setOrigin(sf::Vector2f(__frameDimensions.x / 2.f, __frameDimensions.y / 2.f));
 		_body.setTextureRect(sf::IntRect(this->__frameDimensions.x, 0, __frameDimensions.x, __frameDimensions.y));
 	}
 
 protected:
-	std::map<std::string, std::string> _animationsNames; // <internalName, linkedName>
+	std::map<std::string, std::pair<std::string, unsigned int>> _animationsNames; // <internalName, <linkedName, frames>>
 	sf::Sprite _body;
 
 public:
@@ -40,16 +40,15 @@ public:
 			std::cout << red << " - Animatable Class Failed - \n" << reset;
 		}
 
-		std::string internalName, linkedName;
+		std::string internalName, linkedName; unsigned int frameCount;
 
 		try {
-			file >> linkedName >> internalName; // dimensions: __frameDimensions [x, y]
-			__frameDimensions.x = std::stoi(linkedName);
-			__frameDimensions.y = std::stoi(internalName);
+			file >> __frameDimensions.x >> __frameDimensions.y; // dimensions: __frameDimensions [x, y]
+			file >> offset;
 
 			while (!file.eof()) {
-				file >> internalName; file >> linkedName; file >> linkedName;
-				_animationsNames.insert(std::make_pair(internalName, linkedName));
+				file >> internalName; file >> linkedName; file >> linkedName; file >> frameCount;
+				_animationsNames.insert(std::make_pair(internalName, std::make_pair(linkedName, frameCount)));
 			}
 
 			__currentAnimation = _animationsNames.end();
@@ -74,11 +73,12 @@ public:
 
 			_body.setTextureRect(
 				sf::IntRect(
-					this->__frameDimensions.x * this->__animationIndex++, 0, __frameDimensions.x, __frameDimensions.y
+					this->__frameDimensions.x * this->__animationIndex + this->offset * this->__animationIndex++ , 0,
+					__frameDimensions.x, __frameDimensions.y
 				)
 			);
 
-			if (__animationIndex >= (_body.getTexture()->copyToImage().getSize().x / __frameDimensions.x))
+			if (__animationIndex >= this->__currentAnimation->second.second)
 				__animationIndex = 0;
 
 		}
@@ -86,12 +86,12 @@ public:
 
 	virtual void updateAnimation() {}
 
-	std::map<std::string, std::string>::iterator getAnimationItByInternalName(std::string internalName) {
+	std::map<std::string, std::pair<std::string, unsigned int>>::iterator getAnimationItByInternalName(std::string internalName) {
 		try {
 
 			_animationsNames.at(internalName);
 
-			std::map<std::string, std::string>::iterator result = _animationsNames.begin();
+			std::map<std::string, std::pair<std::string, unsigned int>>::iterator result = _animationsNames.begin();
 			for (auto e : _animationsNames) {
 				if (e.first == internalName) return result;
 				result++;
@@ -103,7 +103,7 @@ public:
 		}
 	}
 
-	bool setAnimationWithIt(std::map<std::string, std::string>::iterator newAnimation) {
+	bool setAnimationWithIt(std::map<std::string, std::pair<std::string, unsigned int>>::iterator newAnimation) {
 		if (__currentAnimation == newAnimation) return false;
 		__currentAnimation = newAnimation; loadNewAnimation(); return true;
 	}

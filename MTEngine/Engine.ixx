@@ -93,7 +93,8 @@ export class Engine {
 
 	void moveAllObjects() {
 		for (auto const& e : oc._objectMoves) {
-			Functor f = e.second; f();
+			Functor f = e.second.first; f();
+			f = e.second.second; f();
 		}
 	}
 
@@ -113,12 +114,18 @@ export class Engine {
 	void deleteAllObjects() { 
 		for (auto const& [className, element] : oc._database) {
 			for (auto const& [id, object] : element) {
-				if (!object->isObjectAlive()) {
+				try {
+					if (object == nullptr) throw std::exception("Object Terminated.");
+					if (!object->isObjectAlive()) {
 
-					deleteMutex.lock();
-					oc.deleteObject(object->getID());
-					deleteMutex.unlock();
+						deleteMutex.lock();
+						oc.deleteObject(object->getID());
+						deleteMutex.unlock();
 
+						break;
+					}
+				}
+				catch (const std::exception& err) {
 					break;
 				}
 			}
@@ -181,17 +188,25 @@ public:
 				if (elapsedTime - prevTime > 1000 / (__framerate)) {
 					prevTime = elapsedTime;
 
-					if (viewLock) {
-						view.reset(sf::FloatRect(
-							(int)oc._database[viewObjectData.first][viewObjectData.second]->getPosition().x,
-							(int)oc._database[viewObjectData.first][viewObjectData.second]->getPosition().y,
-							(int)window->getSize().x, (int)window->getSize().y
-						));
-						view.setCenter(
-							oc._database[viewObjectData.first][viewObjectData.second]->getPosition().x,
-							oc._database[viewObjectData.first][viewObjectData.second]->getPosition().y
-						);
-						window->setView(view);
+					try {
+						if (viewLock) {
+							std::weak_ptr<Base> _viewObject = oc._database[viewObjectData.first][viewObjectData.second];
+							if (_viewObject.lock() == nullptr) throw std::exception("ViewObject terminated.");
+							view.reset(sf::FloatRect(
+								int(_viewObject.lock()->getPosition().x),
+								int(_viewObject.lock()->getPosition().y),
+								int(window->getSize().x), int(window->getSize().y)
+							));
+							view.setCenter(
+								_viewObject.lock()->getPosition().x,
+								_viewObject.lock()->getPosition().y
+							);
+							window->setView(view);
+							
+						}
+					}
+					catch (const std::exception& err) {
+						viewLock = false;
 					}
 
 					checkAndExecuteEventsInAllObjects();

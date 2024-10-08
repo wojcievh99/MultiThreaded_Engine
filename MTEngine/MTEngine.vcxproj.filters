@@ -78,8 +78,14 @@
     <ClCompile Include="MainCharacter.ixx">
       <Filter>Source Files\Engine\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="FloorRect.ixx">
+    <ClCompile Include="R.ixx">
       <Filter>Source Files\Engine\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Textureable.ixx">
+      <Filter>Source Files\Engine\ObjectDerived</Filter>
+    </ClCompile>
+    <ClCompile Include="Physicsable.ixx">
+      <Filter>Source Files\Engine\ObjectDerived</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

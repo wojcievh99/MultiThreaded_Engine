@@ -1,2 +1,2 @@
-96 96
-IDLE - Idle.png
+37 52 163
+IDLE - Idle.png 8
