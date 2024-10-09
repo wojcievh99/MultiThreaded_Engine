@@ -32,6 +32,8 @@ public:
 		));
 		sb = false;
 
+		this->setAccDirection(sf::Vector2f(0.f, .5f));
+
 		/// KA
 		this->addKeyAssociation(sf::Keyboard::D, Functor(
 			[this]() {
@@ -41,6 +43,13 @@ public:
 		this->addKeyAssociation(sf::Keyboard::A, Functor(
 			[this]() {
 				this->setMoveDirection(sf::Vector2f(this->getMoveDir().x - 2.f, this->getMoveDir().y));
+			}
+		));
+
+		this->addKeyAssociation(sf::Keyboard::Space, Functor(
+			[this]() {
+				if (this->checkCollisionSide().contains(LEFT_BOTTOM) and this->checkCollisionSide().contains(RIGHT_BOTTOM))
+					this->setMoveDirection(sf::Vector2f(this->getMoveDir().x, this->getMoveDir().y - 15.f));
 			}
 		));
 
@@ -74,11 +83,20 @@ public:
 	}
 
 	void updateObject() {
+		std::set<collisionSide> cs = this->checkCollisionSide();
 
+		if (!cs.size()) this->setAccDirection(sf::Vector2f(0.f, .5f));
+	
 	}
 
 	void afterCollision() {
-		
+		std::set<collisionSide> cs = this->checkCollisionSide();
+
+		if (cs.contains(LEFT_BOTTOM) or cs.contains(RIGHT_BOTTOM)) {
+			this->setAccDirection(sf::Vector2f(0.f, 0.f));
+			this->setMoveDirection(sf::Vector2f(this->getMoveDir().x, 0.f));
+		}
+
 	}
 
 	sf::Vector2f getPosition() {

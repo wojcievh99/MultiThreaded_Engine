@@ -182,7 +182,6 @@
     <ClCompile Include="Drawable.ixx" />
     <ClCompile Include="Engine.ixx" />
     <ClCompile Include="Eventable.ixx" />
-    <ClCompile Include="Physicsable.ixx" />
     <ClCompile Include="R.ixx" />
     <ClCompile Include="Functor.ixx" />
     <ClCompile Include="Globals.ixx" />

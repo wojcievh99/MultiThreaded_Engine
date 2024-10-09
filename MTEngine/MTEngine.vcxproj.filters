@@ -84,9 +84,6 @@
     <ClCompile Include="Textureable.ixx">
       <Filter>Source Files\Engine\ObjectDerived</Filter>
     </ClCompile>
-    <ClCompile Include="Physicsable.ixx">
-      <Filter>Source Files\Engine\ObjectDerived</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="TextFile.md">
