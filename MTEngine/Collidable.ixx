@@ -2,8 +2,11 @@ export module Collidable;
 
 import Globals;
 
-export enum collisionSide {
+export enum collisionCorner {
 	LEFT_TOP, RIGHT_TOP, LEFT_BOTTOM, RIGHT_BOTTOM
+};
+export enum collisionSide {
+	LEFT, RIGHT, UP, DOWN
 };
 
 export class Collidable {
@@ -39,10 +42,9 @@ public:
 		return false;
 	}
 
-	// acctually returns angles of global bounds that are colliding
-	std::set<collisionSide> checkCollisionSide() { 
+	std::set<collisionCorner> checkCollisionCorner() {
 
-		std::set<collisionSide> result;
+		std::set<collisionCorner> result;
 
 		for (const auto& e : this->_objectColliding) {
 			if (e->getObjectBounds()
@@ -80,6 +82,86 @@ public:
 		}
 
 		return result;
-	}
+	}	
+	// great accuracy	|
+	//					V
+	std::set<collisionSide> checkCollisionSide(unsigned int divisor) {
+		std::set<collisionSide> v;
+
+		for (const auto& object : this->_objectColliding) {
+			for (auto side : { LEFT, RIGHT, UP, DOWN }) {
+				if (side == LEFT) {
+					float space = this->getObjectBounds().height / divisor;
+					unsigned int result = 0;
+					for (unsigned int d = 0; d <= divisor; d++) {
+						if (object->getObjectBounds().contains(
+							sf::Vector2f(
+								this->getObjectBounds().left,
+								this->getObjectBounds().top + (space * d)
+							)
+						))
+							result++;
+						if (result > 2) {
+							v.insert(side); // LEFT
+							break;
+						}
+					}
+				}
+				else if (side == RIGHT) {
+					float space = this->getObjectBounds().height / divisor;
+					unsigned int result = 0;
+					for (unsigned int d = 0; d <= divisor; d++) {
+						if (object->getObjectBounds().contains(
+							sf::Vector2f(
+								this->getObjectBounds().left + this->getObjectBounds().width,
+								this->getObjectBounds().top + (space * d)
+							)
+						))
+							result++;
+						if (result > 2) {
+							v.insert(side); // RIGHT
+							break;
+						}
+					}
+				}
+				else if (side == UP) {
+					float space = this->getObjectBounds().width / divisor;
+					unsigned int result = 0;
+					for (unsigned int d = 0; d <= divisor; d++) {
+						if (object->getObjectBounds().contains(
+							sf::Vector2f(
+								this->getObjectBounds().left + (space * d),
+								this->getObjectBounds().top
+							)
+						))
+							result++;
+						if (result > 2) {
+							v.insert(side); // UP
+							break;
+						}
+					}
+				}
+				else if (side == DOWN) {
+					float space = this->getObjectBounds().width / divisor;
+					unsigned int result = 0;
+					for (unsigned int d = 0; d <= divisor; d++) {
+						if (object->getObjectBounds().contains(
+							sf::Vector2f(
+								this->getObjectBounds().left + (space * d),
+								this->getObjectBounds().top + this->getObjectBounds().height
+							)
+						))
+							result++;
+						if (result > 2) {
+							v.insert(side); // DOWN
+							break;
+						}
+					}
+				}
+			}
+		}
+		return v;
+	} 
+	// 10-15 is mostly optimal for the divisor but it depends on the actual size
 
 };

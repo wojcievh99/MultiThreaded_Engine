@@ -1,2 +1,3 @@
 37 52 163
 IDLE - Idle.png 8
+RUN - Run.png 8

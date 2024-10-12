@@ -65,7 +65,10 @@ export class Engine {
 						if (!e.second.lock()->_lockedIndKeys.contains(key) 
 							and event->type == sf::Event::KeyReleased and event->key.code == key)
 						{
-							Functor f = func; f();
+							if (!e.second.lock()->_lockedIndKeyRelease.contains(key)) {
+								Functor f = func; f();
+							}
+							else e.second.lock()->_lockedIndKeyRelease.erase(key);
 						}
 					for (auto const& [button, func] : e.second.lock()->_buttonAssociation)
 						if (!e.second.lock()->_lockedIndButtons.contains(button) 
@@ -77,7 +80,10 @@ export class Engine {
 						if (!e.second.lock()->_lockedIndButtons.contains(button)
 							and event->type == sf::Event::MouseButtonReleased and event->mouseButton.button == button)
 						{
-							Functor f = func; f();
+							if (!e.second.lock()->_lockedIndButtonRelease.contains(button)) {
+								Functor f = func; f();
+							}
+							else e.second.lock()->_lockedIndButtonRelease.erase(button);
 						}
 
 				}

@@ -14,14 +14,20 @@ int main()
 	bool init = engine.init({ 1800, 1200 }, "ShadowFighter", false, 60); 
 
 	engine.addObject<R>(std::make_shared<R>(
-		sf::Vector2f(0.f, 500.f),
-		sf::Vector2f(1000.f, 100.f),
+		sf::Vector2f(-200.f, 500.f),
+		sf::Vector2f(2000.f, 100.f),
 		sf::Color::Green
 	));
 
 	engine.addObject<R>(std::make_shared<R>(
 		sf::Vector2f(0.f, 300.f),
 		sf::Vector2f(100.f, 200.f),
+		sf::Color::Red
+	));
+
+	engine.addObject<R>(std::make_shared<R>(
+		sf::Vector2f(500.f, 200.f),
+		sf::Vector2f(400.f, 100.f),
 		sf::Color::Red
 	));
 

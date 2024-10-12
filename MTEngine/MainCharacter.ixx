@@ -12,6 +12,7 @@ import Animateable;
 
 export class MainCharacter : public Base, public Drawable, public Moveable, public Collidable, public Updateable, public Eventable, public Animateable {
 	sf::RectangleShape __showbounds; bool sb;
+	unsigned int DIVISOR;
 
 public:
 	MainCharacter(sf::Vector2f position) : Base(typeid(this).raw_name()), Animateable("textures/character1")
@@ -30,7 +31,7 @@ public:
 				this->sb = !this->sb;
 			}
 		));
-		sb = false;
+		sb = false; DIVISOR = 15;
 
 		this->setAccDirection(sf::Vector2f(0.f, .5f));
 
@@ -38,20 +39,24 @@ public:
 		this->addKeyAssociation(sf::Keyboard::D, Functor(
 			[this]() {
 				this->setMoveDirection(sf::Vector2f(this->getMoveDir().x + 2.f, this->getMoveDir().y));
+				this->unlockIndEvent(sf::Keyboard::A);
+				this->setAnimationWithIt(this->getAnimationItByInternalName("RUN"));
 			}
 		));
 		this->addKeyAssociation(sf::Keyboard::A, Functor(
 			[this]() {
 				this->setMoveDirection(sf::Vector2f(this->getMoveDir().x - 2.f, this->getMoveDir().y));
+				this->unlockIndEvent(sf::Keyboard::D);
 			}
 		));
 
 		this->addKeyAssociation(sf::Keyboard::Space, Functor(
 			[this]() {
-				if (this->checkCollisionSide().contains(LEFT_BOTTOM) and this->checkCollisionSide().contains(RIGHT_BOTTOM))
+				if (this->checkCollisionSide(DIVISOR).contains(DOWN))
 					this->setMoveDirection(sf::Vector2f(this->getMoveDir().x, this->getMoveDir().y - 15.f));
 			}
 		));
+		this->addReleaseKeyAssociation(sf::Keyboard::Space, Functor([]() {}));
 
 		/// RKA
 		this->addReleaseKeyAssociation(sf::Keyboard::D, Functor(
@@ -64,7 +69,6 @@ public:
 				this->setMoveDirection(sf::Vector2f(this->getMoveDir().x + 2.f, this->getMoveDir().y));
 			}
 		));
-
 	}
 
 	void drawObject() {
@@ -83,18 +87,29 @@ public:
 	}
 
 	void updateObject() {
-		std::set<collisionSide> cs = this->checkCollisionSide();
+		std::set<collisionSide> cs = this->checkCollisionSide(DIVISOR);
 
-		if (!cs.size()) this->setAccDirection(sf::Vector2f(0.f, .5f));
+		if (!cs.contains(DOWN)) this->setAccDirection(sf::Vector2f(0.f, .5f));		
 	
 	}
 
 	void afterCollision() {
-		std::set<collisionSide> cs = this->checkCollisionSide();
+		std::set<collisionSide> cs = this->checkCollisionSide(DIVISOR);
 
-		if (cs.contains(LEFT_BOTTOM) or cs.contains(RIGHT_BOTTOM)) {
+		if (cs.contains(DOWN)) {
 			this->setAccDirection(sf::Vector2f(0.f, 0.f));
 			this->setMoveDirection(sf::Vector2f(this->getMoveDir().x, 0.f));
+		}
+		if (cs.contains(UP)) {
+			this->setMoveDirection(sf::Vector2f(this->getMoveDir().x, 0.f));
+		}
+		if (cs.contains(LEFT)) {
+			this->setMoveDirection(sf::Vector2f(0.f, this->getMoveDir().y));
+			this->lockIndEvent(sf::Keyboard::A);
+		}
+		if (cs.contains(RIGHT)) {
+			this->setMoveDirection(sf::Vector2f(0.f, this->getMoveDir().y));
+			this->lockIndEvent(sf::Keyboard::D);
 		}
 
 	}
