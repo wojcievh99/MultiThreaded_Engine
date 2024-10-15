@@ -28,19 +28,16 @@ public:
 
 		this->addKeyAssociation(sf::Keyboard::LControl, Functor(
 			[this]() {
-				this->sb = !this->sb;
+				this->sb = !this->sb; // show bounds 
 			}
 		));
-		sb = false; DIVISOR = 15;
-
-		this->setAccDirection(sf::Vector2f(0.f, .5f));
+		sb = true; DIVISOR = 50;
 
 		/// KA
 		this->addKeyAssociation(sf::Keyboard::D, Functor(
 			[this]() {
 				this->setMoveDirection(sf::Vector2f(this->getMoveDir().x + 2.f, this->getMoveDir().y));
 				this->unlockIndEvent(sf::Keyboard::A);
-				this->setAnimationWithIt(this->getAnimationItByInternalName("RUN"));
 			}
 		));
 		this->addKeyAssociation(sf::Keyboard::A, Functor(
@@ -89,8 +86,20 @@ public:
 	void updateObject() {
 		std::set<collisionSide> cs = this->checkCollisionSide(DIVISOR);
 
-		if (!cs.contains(DOWN)) this->setAccDirection(sf::Vector2f(0.f, .5f));		
+		if (!cs.contains(DOWN)) this->setAccDirection(sf::Vector2f(0.f, .5f));	
 	
+	}
+
+	bool isInCollisionWith(std::weak_ptr<Collidable> ob) {
+		sf::FloatRect other = ob.lock()->getObjectBounds(), current = this->getObjectBounds();
+
+		if (current.left == (other.left + other.width) or
+			(current.left + current.width) == other.left or
+			current.top == (other.top + other.height) or
+			(current.top + current.height) == other.top)
+			return true;
+
+		return false;
 	}
 
 	void afterCollision() {
@@ -120,6 +129,10 @@ public:
 
 	sf::FloatRect getObjectBounds() {
 		return _body.getGlobalBounds();
+	}
+
+	void forcePositionChange(sf::Vector2f newPosition) {
+		_body.setPosition(newPosition);
 	}
 
 };

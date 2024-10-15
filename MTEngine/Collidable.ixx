@@ -17,11 +17,11 @@ public:
 	virtual sf::FloatRect getObjectBounds() = 0;
 
 	virtual bool isInCollisionWith(std::weak_ptr<Collidable> ob) {
-		return isCollisionPossible(ob);
+		return isIntersecting(ob);
 	}
 	virtual void afterCollision() = 0;
 
-	virtual bool isCollisionPossible(std::weak_ptr<Collidable> ob) {
+	virtual bool isIntersecting(std::weak_ptr<Collidable> ob) {
 		return this->getObjectBounds().intersects(ob.lock()->getObjectBounds());
 	}
 
@@ -82,13 +82,16 @@ public:
 		}
 
 		return result;
-	}	
+	}
 	// great accuracy	|
 	//					V
-	std::set<collisionSide> checkCollisionSide(unsigned int divisor) {
-		std::set<collisionSide> v;
+	std::set<collisionSide> checkCollisionSide(unsigned int divisor, std::shared_ptr<Collidable> ob = nullptr) {
+		std::set<collisionSide> v; 
 
-		for (const auto& object : this->_objectColliding) {
+		for (const auto& object : 
+				(nullptr == nullptr ? this->_objectColliding : std::set<std::shared_ptr<Collidable>>{ ob })
+			) 
+		{
 			for (auto side : { LEFT, RIGHT, UP, DOWN }) {
 				if (side == LEFT) {
 					float space = this->getObjectBounds().height / divisor;
@@ -161,7 +164,6 @@ public:
 			}
 		}
 		return v;
-	} 
+	}
 	// 10-15 is mostly optimal for the divisor but it depends on the actual size
-
 };

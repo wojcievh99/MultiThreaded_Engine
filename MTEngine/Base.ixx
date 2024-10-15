@@ -34,8 +34,9 @@ public:
 	}
 
 	virtual void garbage() {
-		//_object_alive = false;
 		std::cout << "[ID: " << __object_id << "](-) \n";
 	}
+
+	virtual void forcePositionChange(sf::Vector2f newPosition) {};
 
 };

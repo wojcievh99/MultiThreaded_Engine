@@ -8,7 +8,7 @@ export class Engine {
 	static void checkAndExecuteCollisionsInAllObjects() {
 		for (std::pair<uint64_t, std::weak_ptr<Collidable>> e : oc._objectWithCollisions) {
 			for (std::pair<uint64_t, std::weak_ptr<Collidable>> otherObject : oc._objectWithCollisions) {
-				if (e.first != otherObject.first) {//and e.second.lock()->isCollisionPossible(otherObject.second)) {
+				if (e.first != otherObject.first) {
 					if (e.second.lock()->isInCollisionWith(otherObject.second)) {
 						if (e.second.lock()->putObjectColliding(otherObject.second.lock())) {
 
@@ -99,8 +99,47 @@ export class Engine {
 
 	void moveAllObjects() {
 		for (auto const& e : oc._objectMoves) {
+
 			Functor f = e.second.first; f();
 			f = e.second.second; f();
+
+			if (oc._objectWithCollisions[e.first].lock() != nullptr) {
+				sf::FloatRect b = oc._objectWithCollisions[e.first].lock()->getObjectBounds();
+
+				for (std::pair<uint64_t, std::weak_ptr<Collidable>> other : oc._objectWithCollisions)
+					if (other.second.lock()->getObjectBounds() != b and 
+						other.second.lock()->getObjectBounds().intersects(b)) 
+					{
+						std::string className; for (const auto& cn : oc._membership) if (cn.second.contains(e.first)) className = cn.first;
+						std::set<collisionSide> sides = other.second.lock()->
+							checkCollisionSide(100, oc._objectWithCollisions[e.first].lock());
+						std::weak_ptr<Base> object = oc._database[className][e.first];
+						sf::FloatRect otherB = other.second.lock()->getObjectBounds();
+						if (sides.contains(UP)) {
+							object.lock()->forcePositionChange(
+								sf::Vector2f(object.lock()->getPosition().x, 
+									otherB.top - b.height / 2.f));
+						}
+						else if (sides.contains(DOWN)) {
+							object.lock()->forcePositionChange(
+								sf::Vector2f(object.lock()->getPosition().x,
+									otherB.top + otherB.height + b.height / 2.f));
+						}
+						else if (sides.contains(RIGHT)) {
+							object.lock()->forcePositionChange(
+								sf::Vector2f(otherB.left + otherB.width + b.width / 2.f, 
+									object.lock()->getPosition().y));
+						}
+						else if (sides.contains(LEFT)) {
+							object.lock()->forcePositionChange(
+								sf::Vector2f(otherB.left - b.width / 2.f,
+									object.lock()->getPosition().y));
+						}
+						break;
+					}
+
+			}
+
 		}
 	}
 
